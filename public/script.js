@@ -1,8 +1,7 @@
-// const submitURL = "http://localhost:3000/submit";
-// const cheatURL = "http://localhost:3000/cheat";
+const submitURL = "http://localhost:3000/submit";
+const cheatURL = "http://localhost:3000/cheat";
 
-const submitURL = "https://b8fc-2409-40c4-31b-ccd2-5ccc-8675-e09b-4b2d.ngrok-free.app/submit";
-const cheatURL = "https://b8fc-2409-40c4-31b-ccd2-5ccc-8675-e09b-4b2d.ngrok-free.app/cheat";
+
 
 
 
