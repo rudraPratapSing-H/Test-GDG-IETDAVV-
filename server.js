@@ -3,16 +3,16 @@ const path = require("path");
 const axios = require("axios");
 const cors = require("cors");
 
-
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());  // Enable CORS (be cautious in production)
-app.use(express.static(path.join(__dirname, "public")));  // Serve frontend
+app.use(cors()); // Enable CORS (be cautious in production)
+app.use(express.static(path.join(__dirname, "public"))); // Serve frontend
 
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz3LvTeyQaMVlAllVBNL9tB-xSPPCz2nla6kexcY4AD68thr_zWh50x5ItVFRIwhMyS/exec"; 
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbz3LvTeyQaMVlAllVBNL9tB-xSPPCz2nla6kexcY4AD68thr_zWh50x5ItVFRIwhMyS/exec";
 
 //Check emails
 app.post("/check-email", async (req, res) => {
@@ -26,7 +26,6 @@ app.post("/check-email", async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-
 
 // Submit Answers
 app.post("/submit", async (req, res) => {
@@ -45,14 +44,14 @@ app.post("/submit", async (req, res) => {
       year,
       email,
       answers,
-      cheating: false
+      cheating: false,
     });
 
     console.log("Submitted to Google Sheet:", response.status);
     res.status(200).send("Submitted successfully");
   } catch (err) {
     console.error("Submit error:", err.message);
-    res.status(500).send("Submission failed", );
+    res.status(500).send("Submission failed");
   }
 });
 
@@ -66,10 +65,10 @@ app.post("/cheat", async (req, res) => {
     const { name, email, reason } = req.body;
 
     const response = await axios.post(GOOGLE_SCRIPT_URL, {
-        name,
+      name,
       email,
       cheating: true,
-      reason
+      reason,
     });
 
     res.status(200).send("Cheating reported");
