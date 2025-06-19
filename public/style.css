@@ -1,0 +1,123 @@
+ * {
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+
+    body {
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .form-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 8px;
+      padding: 30px 40px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      min-height: 100vh;
+    }
+
+    h2 {
+      color: #202124;
+      font-size: 24px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+
+    label {
+      display: block;
+      font-size: 14px;
+      color: #3c4043;
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dadce0;
+      border-radius: 4px;
+      font-size: 14px;
+      background: #f8f9fa;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border 0.2s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #1a73e8;
+    }
+
+    .btn {
+      background-color: #1a73e8;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #1665c1;
+    }
+
+    #quiz-section {
+      display: none;
+    }
+
+    .question {
+      display: none;
+      margin-top: 20px;
+    }
+
+    .question.active {
+      min-height: 30vh;
+      min-width:  50vh;
+      display: block;
+    }
+
+    .question.hide {
+      min-height: 50vh;
+      min-width:  50vh;
+      display: none;
+    }
+
+    .question p {
+      font-weight: 500;
+      font-size: 16px;
+      color: #202124;
+    }
+
+    .question label {
+      font-weight: normal;
+      display: block;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+
+    .nav-buttons,
+    #submit-btn-container {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .nav-buttons,
+      #submit-btn-container {
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
