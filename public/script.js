@@ -4,10 +4,12 @@ const cheatURL = `${BASE_URL}/cheat`;
 let score = 0;
 let cheatCount = 0;
 let timer;
-let timeLeft = 120;
+let timeLeft = 30;
 const totalTime = timeLeft;
 let isLocked = false;
 let cheatDisplay;
+
+let timeFlag = 0;
 
 let submit = false;
 
@@ -20,6 +22,10 @@ const questions = document.querySelectorAll(".question");
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
+
+if (timeFlag === 5) {
+  autoSubmit("Time's up!");
+}
 
 function forceFullscreen() {
   requestFullscreen()
@@ -195,10 +201,12 @@ function setupAntiCheat() {
   window.addEventListener("contextmenu", (e) => e.preventDefault());
 }
 
+let extraSecond = 0;
 function startTimer() {
   const label = document.getElementById("timer-text");
   if (!label) return;
-
+  clearInterval(timer);  // crutial for timer to work properly
+  timeLeft = 30;
   timer = setInterval(() => {
     timeLeft--;
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
@@ -206,8 +214,15 @@ function startTimer() {
     label.textContent = `${minutes}:${seconds}`;
 
     if (timeLeft <= 0) {
-      clearInterval(timer);
-      autoSubmit("Time expired");
+      clearInterval(timer);  // crutial for timer to work propely
+
+
+      if (currentQuestion === questions.length - 1) {
+        autoSubmit("Time's up on last question");
+      } else {
+        extraSecond++;
+        nextQuestion();
+      }
     }
   }, 1000);
 }
@@ -270,8 +285,12 @@ window.nextQuestion = () => {
       score++;
     }
 
+    timeFlag++;
     currentQuestion++;
-    showQuestion(currentQuestion);
+
+    showQuestion(currentQuestion);  // crutial for timer to work propely
+    clearInterval(timer);
+    startTimer();
   }
 };
 
@@ -286,12 +305,5 @@ window.checkQuestion = (index, answer) => {
   } else {
     answerDisplay.textContent = `Incorrect! The correct answer was: ${correctAnswer}`;
     answerDisplay.style.color = "red";
-  }
-};
-
-window.prevQuestion = () => {
-  if (!isLocked && currentQuestion > 0) {
-    currentQuestion--;
-    showQuestion(currentQuestion);
   }
 };
