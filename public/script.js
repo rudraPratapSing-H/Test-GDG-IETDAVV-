@@ -1,27 +1,33 @@
-// script.js - Timer, Cheating Detection & Lockout
+// script.js - Timer, Cheating Detection & Lockout (with circular countdown)
 
-const submitURL =
-  "https://4cc8-2401-4900-1c19-d519-b08b-34c6-f685-6ffb.ngrok-free.app/submit";
-const cheatURL =
-  "https://4cc8-2401-4900-1c19-d519-b08b-34c6-f685-6ffb.ngrok-free.app/cheat";
+const BASE_URL = window.location.origin;
+const submitURL = `${BASE_URL}/submit`;
+const cheatURL = `${BASE_URL}/cheat`;
 
 let cheatCount = 0;
 let timer;
 let timeLeft = 120;
-let submit = false;
-let visibilityHandler;
+const totalTime = timeLeft;
 let isLocked = false;
+let cheatDisplay;
 
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
 const questions = document.querySelectorAll(".question");
-let cheatDisplay;
-
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
-
 let currentQuestion = 0;
+
+// Grab the SVG circle element
+const timerCircle = document.getElementById("timer-circle");
+const radius = timerCircle.r.baseVal.value;
+const circumference = 2 * Math.PI * radius;
+
+// Prepare the circle for animation
+timerCircle.style.strokeDasharray = `${circumference} ${circumference}`;
+timerCircle.style.strokeDashoffset = `${circumference}`;
+timerCircle.style.transition = "stroke-dashoffset 1s linear";
 
 form.addEventListener("submit", function (e) {
   e.preventDefault();
@@ -42,8 +48,7 @@ form.addEventListener("submit", function (e) {
 function showQuestion(index) {
   questions.forEach((q, i) => {
     q.classList.remove("active", "hide");
-    if (i === index) q.classList.add("active");
-    else q.classList.add("hide");
+    q.classList.add(i === index ? "active" : "hide");
   });
 }
 
@@ -57,7 +62,7 @@ function reportCheating(reason) {
       reason,
     }),
     headers: { "Content-Type": "application/json" },
-  }).catch((err) => console.log(`ERROR:-${err}`));
+  }).catch((err) => console.log(`ERROR: ${err}`));
 }
 
 function autoSubmit(reason) {
@@ -84,7 +89,7 @@ function setupAntiCheat() {
       cheatCount++;
       if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
       if (cheatDisplay)
-        cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / 3`;
+        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
       showCheatWarning();
       reportCheating("Tab switched");
 
@@ -109,9 +114,14 @@ function startTimer() {
 
   timer = setInterval(() => {
     timeLeft--;
-    let min = String(Math.floor(timeLeft / 60)).padStart(2, "0");
-    let sec = String(timeLeft % 60).padStart(2, "0");
-    label.textContent = `${min}:${sec}`;
+    const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+    const seconds = String(timeLeft % 60).padStart(2, "0");
+    label.textContent = `${minutes}:${seconds}`;
+
+    // update the circle offset
+    const pct = timeLeft / totalTime;
+    const offset = circumference * (1 - pct);
+    timerCircle.style.strokeDashoffset = offset;
 
     if (timeLeft <= 0) {
       clearInterval(timer);
@@ -148,16 +158,22 @@ function submitForm(auto = false) {
   })
     .then(() => {
       if (!auto) alert("Submitted!");
-      submit = true;
-      document.removeEventListener("visibilitychange", visibilityHandler);
+      document.removeEventListener("visibilitychange", setupAntiCheat);
       window.location.href = "/thankyou.html";
     })
-    .catch((err) => console.log(`ERROR:-${err}`));
+    .catch((err) => console.log(`ERROR: ${err}`));
 }
 
 window.nextQuestion = () => {
   if (!isLocked && currentQuestion < questions.length - 1) {
     currentQuestion++;
+    showQuestion(currentQuestion);
+  }
+};
+
+window.prevQuestion = () => {
+  if (!isLocked && currentQuestion > 0) {
+    currentQuestion--;
     showQuestion(currentQuestion);
   }
 };

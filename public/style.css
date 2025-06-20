@@ -78,6 +78,20 @@ select:focus {
   display: none;
   margin-top: 20px;
 }
+#pie-timer svg {
+  width: 120px;
+  height: 120px;
+}
+#pie-timer circle {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 12;
+}
+#timer-circle {
+  stroke: #f66;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
 
 #timer-display {
   font-size: 16px;
