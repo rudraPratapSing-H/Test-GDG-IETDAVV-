@@ -1,7 +1,7 @@
 const BASE_URL = window.location.origin;
 const submitURL = `${BASE_URL}/submit`;
 const cheatURL = `${BASE_URL}/cheat`;
-
+let score = 0;
 let cheatCount = 0;
 let timer;
 let timeLeft = 120;
@@ -25,11 +25,10 @@ function forceFullscreen() {
     .then(() => {
       document.getElementById("fs-exit-overlay").style.display = "none";
       cheatCount++;
-      currentQuestion++;
 
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
       // showCheatWarning();
-      showQuestion(currentQuestion);
+      //showQuestion(currentQuestion);
       reportCheating("Exited fullscreen");
 
       if (cheatCount >= 3) {
@@ -220,6 +219,7 @@ if (!submit) {
       q4: document.querySelector('input[name="q4"]:checked')?.value,
       q5: document.querySelector('input[name="q5"]:checked')?.value,
     };
+    console.log(score);
 
     fetch(submitURL, {
       method: "POST",
@@ -236,6 +236,8 @@ if (!submit) {
           answers.q5 || "",
         ],
         cheatCount: cheatCount,
+        score: score,
+        timeTaken: totalTime - timeLeft,
       }),
       headers: { "Content-Type": "application/json" },
     })
@@ -252,13 +254,19 @@ if (!submit) {
   }
 }
 
+const correctAnswers = ["a", "b", "c", "a", "b"];
+
 window.nextQuestion = () => {
   if (!isLocked && currentQuestion < questions.length - 1) {
+    const selected = document
+      .querySelector(`input[name="q${currentQuestion + 1}"]:checked`)
+      ?.value?.toLowerCase();
+
+    if (selected && selected === correctAnswers[currentQuestion]) {
+      score++;
+    }
+
     currentQuestion++;
-    // checkQuestion(
-    //   currentQuestion,
-    //   document.querySelector(`input[name="q${currentQuestion}"]:checked`)?.value
-    // );
     showQuestion(currentQuestion);
   }
 };
