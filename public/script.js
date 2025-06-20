@@ -11,6 +11,10 @@ const totalTime = timeLeft;
 let isLocked = false;
 let cheatDisplay;
 
+
+let submit = false;
+
+
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
 const questions = document.querySelectorAll(".question");
@@ -28,7 +32,7 @@ const circumference = 2 * Math.PI * radius;
 timerCircle.style.strokeDasharray = `${circumference} ${circumference}`;
 timerCircle.style.strokeDashoffset = `${circumference}`;
 timerCircle.style.transition = "stroke-dashoffset 1s linear";
-
+if(submit == false){
 form.addEventListener("submit", function (e) {
   e.preventDefault();
   const email = document.getElementById("email").value.trim();
@@ -43,7 +47,7 @@ form.addEventListener("submit", function (e) {
   showQuestion(currentQuestion);
   setupAntiCheat();
   startTimer();
-});
+});}
 
 function showQuestion(index) {
   questions.forEach((q, i) => {
@@ -130,6 +134,8 @@ function startTimer() {
   }, 1000);
 }
 
+
+if(submit == false){
 function submitForm(auto = false) {
   const answers = {
     q1: document.querySelector('input[name="q1"]:checked')?.value,
@@ -158,11 +164,12 @@ function submitForm(auto = false) {
   })
     .then(() => {
       if (!auto) alert("Submitted!");
+      submit = true
       document.removeEventListener("visibilitychange", setupAntiCheat);
       window.location.href = "/thankyou.html";
     })
     .catch((err) => console.log(`ERROR: ${err}`));
-}
+}}
 
 window.nextQuestion = () => {
   if (!isLocked && currentQuestion < questions.length - 1) {
