@@ -62,15 +62,6 @@ app.get("/home", (req, res) => {
 // Report Cheating
 app.post("/cheat", async (req, res) => {
   try {
-    const { name, email, reason } = req.body;
-
-    const response = await axios.post(GOOGLE_SCRIPT_URL, {
-      name,
-      email,
-      cheating: true,
-      reason,
-    });
-
     res.status(200).send("Cheating reported");
   } catch (err) {
     console.error("Cheating error:", err.message);
