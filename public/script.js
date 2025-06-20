@@ -64,8 +64,22 @@ function autoSubmit(reason) {
 function showCheatWarning() {
   const warning = document.getElementById("cheat-warning");
   if (warning) {
+    warning.innerText = `⚠️ Don't try to switch tab. You already switched ${cheatCount} time(s). It will auto-submit after 3 attempts.`;
     warning.style.display = "block";
+    warning.style.color = "red";
+    warning.style.fontWeight = "bold";
+    warning.style.textAlign = "center";
+
+    warningSound.currentTime = 0;
     warningSound.play();
+
+    // ⏱️ Stop sound after 1.5 seconds
+    setTimeout(() => {
+      warningSound.pause();
+      warningSound.currentTime = 0;
+    }, 3000);
+
+    // ⏱️ Hide warning message after 3 seconds
     setTimeout(() => {
       warning.style.display = "none";
     }, 3000);
