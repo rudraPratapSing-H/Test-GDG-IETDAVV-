@@ -11,6 +11,31 @@
     />
   </head>
   <body>
+    <div
+      id="fs-exit-overlay"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: #000000dd;
+        z-index: 9999;
+        color: white;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+      "
+    >
+      <h2>⚠️ Fullscreen Required</h2>
+      <p>You exited fullscreen. Click below to continue.</p>
+      <button
+        onclick="forceFullscreen()"
+        style="padding: 10px 20px; font-size: 16px"
+      >
+        Re-enter Fullscreen
+      </button>
+    </div>
+
     <div class="form-container">
       <h2>Shortlisting Test</h2>
       <form id="user-form">
