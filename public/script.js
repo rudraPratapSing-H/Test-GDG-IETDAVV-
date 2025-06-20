@@ -1,5 +1,3 @@
-// script.js - Timer, Cheating Detection & Lockout (with circular countdown)
-
 const BASE_URL = window.location.origin;
 const submitURL = `${BASE_URL}/submit`;
 const cheatURL = `${BASE_URL}/cheat`;
@@ -11,8 +9,6 @@ const totalTime = timeLeft;
 let isLocked = false;
 let cheatDisplay;
 
-let submit = false;
-
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
 const questions = document.querySelectorAll(".question");
@@ -21,32 +17,22 @@ const warningSound = new Audio(
 );
 let currentQuestion = 0;
 
-// Grab the SVG circle element
-const timerCircle = document.getElementById("timer-circle");
-const radius = timerCircle.r.baseVal.value;
-const circumference = 2 * Math.PI * radius;
+form.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const email = document.getElementById("email").value.trim();
+  const emailPattern = /^[0-9][a-zA-Z0-9]*[0-9]@ietdavv\.edu\.in$/;
+  if (!emailPattern.test(email)) {
+    alert("Invalid email! Use your IET-DAVV email.");
+    return;
+  }
 
-// Prepare the circle for animation
-timerCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-timerCircle.style.strokeDashoffset = `${circumference}`;
-timerCircle.style.transition = "stroke-dashoffset 1s linear";
-if (submit == false) {
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const emailPattern = /^[0-9][a-zA-Z0-9]*[0-9]@ietdavv\.edu\.in$/;
-    if (!emailPattern.test(email)) {
-      alert("Invalid email! write the email provided by IET-DAVV.");
-      return;
-    }
-    form.style.display = "none";
-    quizSection.style.display = "block";
-    cheatDisplay = document.getElementById("cheat-count");
-    showQuestion(currentQuestion);
-    setupAntiCheat();
-    startTimer();
-  });
-}
+  form.style.display = "none";
+  quizSection.style.display = "block";
+  cheatDisplay = document.getElementById("cheat-count");
+  showQuestion(currentQuestion);
+  setupAntiCheat();
+  startTimer();
+});
 
 function showQuestion(index) {
   questions.forEach((q, i) => {
@@ -121,11 +107,6 @@ function startTimer() {
     const seconds = String(timeLeft % 60).padStart(2, "0");
     label.textContent = `${minutes}:${seconds}`;
 
-    // update the circle offset
-    const pct = timeLeft / totalTime;
-    const offset = circumference * (1 - pct);
-    timerCircle.style.strokeDashoffset = offset;
-
     if (timeLeft <= 0) {
       clearInterval(timer);
       autoSubmit("Time expired");
@@ -133,41 +114,38 @@ function startTimer() {
   }, 1000);
 }
 
-if (submit == false) {
-  function submitForm(auto = false) {
-    const answers = {
-      q1: document.querySelector('input[name="q1"]:checked')?.value,
-      q2: document.querySelector('input[name="q2"]:checked')?.value,
-      q3: document.querySelector('input[name="q3"]:checked')?.value,
-      q4: document.querySelector('input[name="q4"]:checked')?.value,
-      q5: document.querySelector('input[name="q5"]:checked')?.value,
-    };
+function submitForm(auto = false) {
+  const answers = {
+    q1: document.querySelector('input[name="q1"]:checked')?.value,
+    q2: document.querySelector('input[name="q2"]:checked')?.value,
+    q3: document.querySelector('input[name="q3"]:checked')?.value,
+    q4: document.querySelector('input[name="q4"]:checked')?.value,
+    q5: document.querySelector('input[name="q5"]:checked')?.value,
+  };
 
-    fetch(submitURL, {
-      method: "POST",
-      body: JSON.stringify({
-        name: document.getElementById("name").value,
-        branch: document.getElementById("branch").value,
-        year: document.getElementById("year").value,
-        email: document.getElementById("email").value,
-        answers: [
-          answers.q1 || "",
-          answers.q2 || "",
-          answers.q3 || "",
-          answers.q4 || "",
-          answers.q5 || "",
-        ],
-      }),
-      headers: { "Content-Type": "application/json" },
+  fetch(submitURL, {
+    method: "POST",
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      branch: document.getElementById("branch").value,
+      year: document.getElementById("year").value,
+      email: document.getElementById("email").value,
+      answers: [
+        answers.q1 || "",
+        answers.q2 || "",
+        answers.q3 || "",
+        answers.q4 || "",
+        answers.q5 || "",
+      ],
+    }),
+    headers: { "Content-Type": "application/json" },
+  })
+    .then(() => {
+      if (!auto) alert("Submitted!");
+      document.removeEventListener("visibilitychange", setupAntiCheat);
+      window.location.href = "/thankyou.html";
     })
-      .then(() => {
-        if (!auto) alert("Submitted!");
-        submit = true;
-        document.removeEventListener("visibilitychange", setupAntiCheat);
-        window.location.href = "/thankyou.html";
-      })
-      .catch((err) => console.log(`ERROR: ${err}`));
-  }
+    .catch((err) => console.log(`ERROR: ${err}`));
 }
 
 window.nextQuestion = () => {

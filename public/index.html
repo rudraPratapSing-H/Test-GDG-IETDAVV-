@@ -36,15 +36,21 @@
         </div>
       </form>
 
-      <div id="quiz-section">
+      <div id="quiz-section" style="display: none">
         <h2>AI Quiz</h2>
 
-        <div id="pie-timer">
-          <svg>
-            <circle r="54" cx="60" cy="60"></circle>
-            <circle id="timer-circle" r="54" cx="60" cy="60"></circle>
-          </svg>
-          <div id="timer-text">2:00</div>
+        <!-- ✅ Clean bold timer -->
+        <p style="font-weight: bold; text-align: center">Total Time Left:</p>
+        <div
+          id="timer-text"
+          style="
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 10px 0;
+          "
+        >
+          2:00
         </div>
 
         <p id="cheat-count" class="cheat-warning">Cheating Attempts: 0/3</p>
@@ -99,9 +105,6 @@
         </div>
 
         <div class="nav-buttons">
-          <!-- <button type="button" class="btn" onclick="prevQuestion()">
-            &larr; Prev
-          </button> -->
           <button type="button" class="btn" onclick="nextQuestion()">
             Next &rarr;
           </button>
