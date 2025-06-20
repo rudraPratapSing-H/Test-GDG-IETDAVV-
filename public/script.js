@@ -82,7 +82,7 @@ function showCheatWarning() {
     // ⏱️ Hide warning message after 3 seconds
     setTimeout(() => {
       warning.style.display = "none";
-    }, 3000);
+    }, 6000);
   }
 }
 
