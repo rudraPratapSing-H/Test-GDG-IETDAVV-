@@ -20,6 +20,7 @@ const questions = document.querySelectorAll(".question");
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
+
 function forceFullscreen() {
   requestFullscreen()
     .then(() => {
@@ -168,7 +169,7 @@ function setupAntiCheat() {
       showCheatWarning();
       reportCheating("Tab switched");
 
-      if (cheatCount >= 3) {
+      if (cheatCount > 3) {
         alert("Cheating limit reached. Auto-submitting your quiz.");
         autoSubmit("Cheated 3 times");
       } else {
@@ -210,48 +211,51 @@ function startTimer() {
     }
   }, 1000);
 }
-if (!submit) {
-  function submitForm(auto = false) {
-    const answers = {
-      q1: document.querySelector('input[name="q1"]:checked')?.value,
-      q2: document.querySelector('input[name="q2"]:checked')?.value,
-      q3: document.querySelector('input[name="q3"]:checked')?.value,
-      q4: document.querySelector('input[name="q4"]:checked')?.value,
-      q5: document.querySelector('input[name="q5"]:checked')?.value,
-    };
-    console.log(score);
 
-    fetch(submitURL, {
-      method: "POST",
-      body: JSON.stringify({
-        name: document.getElementById("name").value,
-        branch: document.getElementById("branch").value,
-        year: document.getElementById("year").value,
-        email: document.getElementById("email").value,
-        answers: [
-          answers.q1 || "",
-          answers.q2 || "",
-          answers.q3 || "",
-          answers.q4 || "",
-          answers.q5 || "",
-        ],
-        cheatCount: cheatCount,
-        score: score,
-        timeTaken: totalTime - timeLeft,
-      }),
-      headers: { "Content-Type": "application/json" },
+function submitForm(auto = false) {
+  if (submit) return; // Prevent multiple submissions
+  submit = true;
+  const submitBtn = document.getElementById("submitBtn");
+  if (submitBtn) submitBtn.disabled = true;
+
+  const answers = {
+    q1: document.querySelector('input[name="q1"]:checked')?.value,
+    q2: document.querySelector('input[name="q2"]:checked')?.value,
+    q3: document.querySelector('input[name="q3"]:checked')?.value,
+    q4: document.querySelector('input[name="q4"]:checked')?.value,
+    q5: document.querySelector('input[name="q5"]:checked')?.value,
+  };
+  console.log(score);
+
+  fetch(submitURL, {
+    method: "POST",
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      branch: document.getElementById("branch").value,
+      year: document.getElementById("year").value,
+      email: document.getElementById("email").value,
+      answers: [
+        answers.q1 || "",
+        answers.q2 || "",
+        answers.q3 || "",
+        answers.q4 || "",
+        answers.q5 || "",
+      ],
+      cheatCount: cheatCount,
+      score: score,
+      timeTaken: totalTime - timeLeft,
+    }),
+    headers: { "Content-Type": "application/json" },
+  })
+    .then(() => {
+      if (!auto) alert("Submitted!");
+      document.removeEventListener("visibilitychange", setupAntiCheat);
+      document.removeEventListener("fullscreenchange", setupAntiCheat);
+      clearInterval(timer);
+      isLocked = true;
+      window.location.href = "/thankyou.html";
     })
-      .then(() => {
-        if (!auto) alert("Submitted!");
-        submit = true;
-        document.removeEventListener("visibilitychange", setupAntiCheat);
-        document.removeEventListener("fullscreenchange", setupAntiCheat);
-        clearInterval(timer);
-        isLocked = true;
-        window.location.href = "/thankyou.html";
-      })
-      .catch((err) => console.log(`ERROR: ${err}`));
-  }
+    .catch((err) => console.log(`ERROR: ${err}`));
 }
 
 const correctAnswers = ["a", "b", "c", "a", "b"];
