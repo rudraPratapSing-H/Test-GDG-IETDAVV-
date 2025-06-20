@@ -11,6 +11,8 @@ let cheatDisplay;
 
 let submit = false;
 
+let keyBlock = false;
+
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
 const questions = document.querySelectorAll(".question");
@@ -23,7 +25,7 @@ function forceFullscreen() {
       document.getElementById("fs-exit-overlay").style.display = "none";
       cheatCount++;
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
-      showCheatWarning();
+      // showCheatWarning();
       reportCheating("Exited fullscreen");
 
       if (cheatCount >= 3) {
@@ -61,6 +63,8 @@ form.addEventListener("submit", function (e) {
     alert("Invalid email! Use your IET-DAVV email.");
     return;
   }
+  
+  keyBlock = true; 
  requestFullscreen()
       .then(() => {
         form.style.display = "none";
@@ -77,9 +81,23 @@ form.addEventListener("submit", function (e) {
 }
 function showQuestion(index) {
   questions.forEach((q, i) => {
+    document
     q.classList.remove("active", "hide");
     q.classList.add(i === index ? "active" : "hide");
+    
   });
+  const progressBarContainer = document.getElementById("progress-bar-container");
+  const progressBar = document.getElementById("progress-bar");
+
+  progressBarContainer.style.display = "block";
+  const progressPercent = ((index + 1) / questions.length) * 100;
+  progressBar.style.width = `${progressPercent}%`;
+
+
+  if(index === questions.length - 1){
+      document.querySelector(".nav-buttons").style.display = "none";
+
+    }
 }
 
 function reportCheating(reason) {
@@ -123,9 +141,20 @@ function showCheatWarning() {
     // ⏱️ Hide warning message after 3 seconds
     setTimeout(() => {
       warning.style.display = "none";
-    }, 3000);
+    }, 6000);
   }
 }
+
+
+
+//block all keys
+
+window.addEventListener("keydown", function (e) {
+  // Prevent all keyboard input
+  if(e.key === "Escape"){
+  e.preventDefault();}
+}, true);
+
 
 function setupAntiCheat() {
   document.addEventListener("visibilitychange", () => {
@@ -150,8 +179,10 @@ function setupAntiCheat() {
 document.addEventListener("fullscreenchange", () => {
   if (!document.fullscreenElement && !isLocked && !submit) {
     // Show overlay or message
+    showCheatWarning();
     const overlay = document.getElementById("fs-exit-overlay");
     overlay.style.display = "flex"; // or "block"
+    
   }
 });
 
