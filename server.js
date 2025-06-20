@@ -12,7 +12,7 @@ app.use(cors()); // Enable CORS (be cautious in production)
 app.use(express.static(path.join(__dirname, "public"))); // Serve frontend
 
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbz3LvTeyQaMVlAllVBNL9tB-xSPPCz2nla6kexcY4AD68thr_zWh50x5ItVFRIwhMyS/exec";
+  "https://script.google.com/macros/s/AKfycbxlZdgnbK5PwLm1CJxVsjTOESZlXF_qUnSvfoSmD5VjMntZaFMvbzxP3g4Qv9f46wYN/exec";
 
 //Check emails
 app.post("/check-email", async (req, res) => {
@@ -30,7 +30,7 @@ app.post("/check-email", async (req, res) => {
 // Submit Answers
 app.post("/submit", async (req, res) => {
   try {
-    const { name, branch, year, email, answers } = req.body;
+    const { name, branch, year, email, answers, cheatCount } = req.body;
 
     // Validate required fields (optional but good practice)
     if (!name || !branch || !year || !email || !answers) {
@@ -44,7 +44,7 @@ app.post("/submit", async (req, res) => {
       year,
       email,
       answers,
-      cheating: false,
+      cheatCount,
     });
 
     console.log("Submitted to Google Sheet:", response.status);

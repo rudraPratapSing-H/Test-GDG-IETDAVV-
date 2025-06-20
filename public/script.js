@@ -16,6 +16,7 @@ let keyBlock = false;
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
 const questions = document.querySelectorAll(".question");
+
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
@@ -24,8 +25,11 @@ function forceFullscreen() {
     .then(() => {
       document.getElementById("fs-exit-overlay").style.display = "none";
       cheatCount++;
+      currentQuestion++;
+
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
       // showCheatWarning();
+      showQuestion(currentQuestion);
       reportCheating("Exited fullscreen");
 
       if (cheatCount >= 3) {
@@ -51,21 +55,20 @@ function requestFullscreen() {
   }
 }
 
-
 let currentQuestion = 0;
 if (!submit) {
-form.addEventListener("submit", function (e) {
-  e.preventDefault();
-  const email = document.getElementById("email").value.trim();
-  const emailPattern = /^[0-2][0-9][a-z]{3}[0-9]{3}@ietdavv\.edu\.in$/;
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const email = document.getElementById("email").value.trim();
+    const emailPattern = /^[0-2][0-9][a-z]{3}[0-9]{3}@ietdavv\.edu\.in$/;
 
-  if (!emailPattern.test(email)) {
-    alert("Invalid email! Use your IET-DAVV email.");
-    return;
-  }
-  
-  keyBlock = true; 
- requestFullscreen()
+    if (!emailPattern.test(email)) {
+      alert("Invalid email! Use your IET-DAVV email.");
+      return;
+    }
+
+    keyBlock = true;
+    requestFullscreen()
       .then(() => {
         form.style.display = "none";
         quizSection.style.display = "block";
@@ -77,27 +80,26 @@ form.addEventListener("submit", function (e) {
       .catch(() => {
         alert("Please enter full screen to continue. ");
       });
-});
+  });
 }
 function showQuestion(index) {
   questions.forEach((q, i) => {
-    document
+    document;
     q.classList.remove("active", "hide");
     q.classList.add(i === index ? "active" : "hide");
-    
   });
-  const progressBarContainer = document.getElementById("progress-bar-container");
+  const progressBarContainer = document.getElementById(
+    "progress-bar-container"
+  );
   const progressBar = document.getElementById("progress-bar");
 
   progressBarContainer.style.display = "block";
   const progressPercent = ((index + 1) / questions.length) * 100;
   progressBar.style.width = `${progressPercent}%`;
 
-
-  if(index === questions.length - 1){
-      document.querySelector(".nav-buttons").style.display = "none";
-
-    }
+  if (index === questions.length - 1) {
+    document.querySelector(".nav-buttons").style.display = "none";
+  }
 }
 
 function reportCheating(reason) {
@@ -123,7 +125,9 @@ function autoSubmit(reason) {
 function showCheatWarning() {
   const warning = document.getElementById("cheat-warning");
   if (warning) {
-    warning.innerText = `⚠️ Don't try to switch tab or escape the full screen. You already switched ${cheatCount} time(s). It will auto-submit after 3 attempts.`;
+    warning.innerText = `⚠️ Don't try to switch tab or escape the full screen. You already switched ${
+      cheatCount + 1
+    } time(s). It will auto-submit after 3 attempts.`;
     warning.style.display = "block";
     warning.style.color = "red";
     warning.style.fontWeight = "bold";
@@ -139,22 +143,21 @@ function showCheatWarning() {
     }, 3000);
 
     // ⏱️ Hide warning message after 3 seconds
-    setTimeout(() => {
-      warning.style.display = "none";
-    }, 6000);
   }
 }
 
-
-
 //block all keys
 
-window.addEventListener("keydown", function (e) {
-  // Prevent all keyboard input
-  if(e.key === "Escape"){
-  e.preventDefault();}
-}, true);
-
+window.addEventListener(
+  "keydown",
+  function (e) {
+    // Prevent all keyboard input
+    if (e.key === "Escape") {
+      e.preventDefault();
+    }
+  },
+  true
+);
 
 function setupAntiCheat() {
   document.addEventListener("visibilitychange", () => {
@@ -176,23 +179,16 @@ function setupAntiCheat() {
     }
   });
 
-document.addEventListener("fullscreenchange", () => {
-  if (!document.fullscreenElement && !isLocked && !submit) {
-    // Show overlay or message
-    showCheatWarning();
-    const overlay = document.getElementById("fs-exit-overlay");
-    overlay.style.display = "flex"; // or "block"
-    
-  }
-});
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement && !isLocked && !submit) {
+      // Show overlay or message
+      showCheatWarning();
+      const overlay = document.getElementById("fs-exit-overlay");
+      overlay.style.display = "flex"; // or "block"
+    }
+  });
 
-
-// function to force full do full screen 
-
-
-
-
-
+  // function to force full do full screen
 
   window.addEventListener("copy", (e) => e.preventDefault());
   window.addEventListener("paste", (e) => e.preventDefault());
@@ -215,47 +211,69 @@ function startTimer() {
     }
   }, 1000);
 }
-if(!submit){
-function submitForm(auto = false) {
-  const answers = {
-    q1: document.querySelector('input[name="q1"]:checked')?.value,
-    q2: document.querySelector('input[name="q2"]:checked')?.value,
-    q3: document.querySelector('input[name="q3"]:checked')?.value,
-    q4: document.querySelector('input[name="q4"]:checked')?.value,
-    q5: document.querySelector('input[name="q5"]:checked')?.value,
-  };
+if (!submit) {
+  function submitForm(auto = false) {
+    const answers = {
+      q1: document.querySelector('input[name="q1"]:checked')?.value,
+      q2: document.querySelector('input[name="q2"]:checked')?.value,
+      q3: document.querySelector('input[name="q3"]:checked')?.value,
+      q4: document.querySelector('input[name="q4"]:checked')?.value,
+      q5: document.querySelector('input[name="q5"]:checked')?.value,
+    };
 
-  fetch(submitURL, {
-    method: "POST",
-    body: JSON.stringify({
-      name: document.getElementById("name").value,
-      branch: document.getElementById("branch").value,
-      year: document.getElementById("year").value,
-      email: document.getElementById("email").value,
-      answers: [
-        answers.q1 || "",
-        answers.q2 || "",
-        answers.q3 || "",
-        answers.q4 || "",
-        answers.q5 || "",
-      ],
-    }),
-    headers: { "Content-Type": "application/json" },
-  })
-    .then(() => {
-      if (!auto) alert("Submitted!");
-      submit = true;
-      document.removeEventListener("visibilitychange", setupAntiCheat);
-      window.location.href = "/thankyou.html";
+    fetch(submitURL, {
+      method: "POST",
+      body: JSON.stringify({
+        name: document.getElementById("name").value,
+        branch: document.getElementById("branch").value,
+        year: document.getElementById("year").value,
+        email: document.getElementById("email").value,
+        answers: [
+          answers.q1 || "",
+          answers.q2 || "",
+          answers.q3 || "",
+          answers.q4 || "",
+          answers.q5 || "",
+        ],
+        cheatCount: cheatCount,
+      }),
+      headers: { "Content-Type": "application/json" },
     })
-    .catch((err) => console.log(`ERROR: ${err}`));
-}
+      .then(() => {
+        if (!auto) alert("Submitted!");
+        submit = true;
+        document.removeEventListener("visibilitychange", setupAntiCheat);
+        document.removeEventListener("fullscreenchange", setupAntiCheat);
+        clearInterval(timer);
+        isLocked = true;
+        window.location.href = "/thankyou.html";
+      })
+      .catch((err) => console.log(`ERROR: ${err}`));
+  }
 }
 
 window.nextQuestion = () => {
   if (!isLocked && currentQuestion < questions.length - 1) {
     currentQuestion++;
+    // checkQuestion(
+    //   currentQuestion,
+    //   document.querySelector(`input[name="q${currentQuestion}"]:checked`)?.value
+    // );
     showQuestion(currentQuestion);
+  }
+};
+
+window.checkQuestion = (index, answer) => {
+  if (index < 0 || index >= questions.length) return;
+  const question = questions[index];
+  const correctAnswer = question.getAttribute("data-answer");
+  const answerDisplay = question.querySelector(".answer-display");
+  if (answer === correctAnswer) {
+    answerDisplay.textContent = "Correct!";
+    answerDisplay.style.color = "green";
+  } else {
+    answerDisplay.textContent = `Incorrect! The correct answer was: ${correctAnswer}`;
+    answerDisplay.style.color = "red";
   }
 };
 
