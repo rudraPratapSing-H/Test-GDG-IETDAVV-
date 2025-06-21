@@ -1,57 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Submitted!</title>
-  <style>
-    body {
-      font-family: 'Courier New', Courier, monospace;
-      background-color: #121212;
-      color: #ffffff;
-      text-align: center;
-      padding-top: 50px;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submission Successful</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    h1 {
-      font-size: 3rem;
-      margin-bottom: 40px;
-    }
+      body {
+        height: 100vh;
+        width: 100vw;
+        background: #ffffff;
+        font-family: "Poppins", sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+        animation: fadeInZoom 0.8s ease-out forwards;
+        opacity: 0;
+      }
 
-    .developers {
-      font-size: 1.2rem;
-      margin-top: 30px;
-    }
+      @keyframes fadeInZoom {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
 
-    .developers a {
-      color: #00ff99;
-      text-decoration: none;
-      font-weight: bold;
-    }
+      img.logo {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+        margin-bottom: 5px;
+        border-radius: 8px;
+        animation: dropIn 0.8s ease;
+      }
 
-    .developers a:hover {
-      text-decoration: underline;
-    }
+      .checkmark {
+        font-size: 70px;
+        color: #34a853;
+        margin-bottom: 15px;
+        animation: bounceIn 0.8s ease-in-out;
+      }
 
-    .contact {
-      margin-top: 15px;
-      font-size: 1rem;
-      color: #cccccc;
-    }
-  </style>
-</head>
-<body>
+      h1 {
+        font-size: 2.5rem;
+        color: #34a853;
+        margin-bottom: 10px;
+      }
 
-  <h1>THANK YOU!</h1>
+      p.message {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 25px;
+      }
 
-  <div class="developers">
-    Developed by <a href="www.linkedin.com/in/rudra-pratap-singh-b88668337" target="_blank">Rudra Pratap Singh</a> 
-    and <a href="www.linkedin.com/in/iamyashjain-b88668337" target="_blank">Yash Jain</a>
-  </div>
+      .btn-home {
+        display: inline-block;
+        padding: 10px 24px;
+        border: 2px solid #4285f4;
+        color: #4285f4;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.3s ease;
+      }
 
-  <div class="contact">
-    📞 Contact: 9179342195
-  </div>
+      .btn-home:hover {
+        background: #4285f4;
+        color: white;
+        transform: translateY(-2px);
+      }
 
-</body>
+      .developers {
+        font-size: 0.95rem;
+        color: #666;
+        margin-top: 40px;
+      }
+
+      .developers a {
+        color: #4285f4;
+        font-weight: 600;
+        text-decoration: none;
+        margin: 0 3px;
+      }
+
+      .developers a:hover {
+        text-decoration: underline;
+      }
+
+      .contact {
+        font-size: 0.85rem;
+        color: #aaa;
+        margin-top: 6px;
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+        60% {
+          transform: scale(1.2);
+          opacity: 1;
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes dropIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <img src="logo.jpg" alt="GDG OC IET DAVV Logo" class="logo" />
+    <div class="checkmark">✔️</div>
+    <h1>THANK YOU!</h1>
+    <p class="message">Your submission has been successfully received.</p>
+    <a href="/" class="btn-home">Go to Homepage</a>
+
+    <div class="developers">
+      Developed by
+      <a
+        href="https://www.linkedin.com/in/rudra-pratap-singh-b88668337"
+        target="_blank"
+        >Rudra Pratap Singh</a
+      >
+      and
+      <a
+        href="https://www.linkedin.com/in/iamyashjain-b88668337"
+        target="_blank"
+        >Yash Jain</a
+      >
+    </div>
+    <div class="contact">Feel free to connect with us on LinkedIn 🤝</div>
+  </body>
 </html>
