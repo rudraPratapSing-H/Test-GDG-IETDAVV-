@@ -1,3 +1,6 @@
+
+import { questions } from "./data.js";
+
 const BASE_URL = window.location.origin;
 const submitURL = `${BASE_URL}/submit`;
 const cheatURL = `${BASE_URL}/cheat`;
@@ -14,18 +17,20 @@ let timeFlag = 0;
 let submit = false;
 
 let keyBlock = false;
+// question showing credentials
+let globalScore = 0;
+let questionSpace = document.querySelector(".question");
+let index = 0;
 
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
-const questions = document.querySelectorAll(".question");
+
 
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
 
-if (timeFlag === 5) {
-  autoSubmit("Time's up!");
-}
+
 
 function forceFullscreen() {
   requestFullscreen()
@@ -36,6 +41,23 @@ function forceFullscreen() {
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
       // showCheatWarning();
       //showQuestion(currentQuestion);
+      
+              questionSpace.innerHTML = `
+  <p>Q${index + 1}: ${questions[index].question}</p>
+  <label><input type="checkbox" name="q${index}" value="a" /> ${
+          questions[index].a
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="b" /> ${
+          questions[index].b
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="c" /> ${
+          questions[index].c
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="d" /> ${
+          questions[index].d
+        }</label>
+`;
+
       reportCheating("Exited fullscreen");
 
       if (cheatCount >= 3) {
@@ -79,7 +101,24 @@ if (!submit) {
         form.style.display = "none";
         quizSection.style.display = "block";
         cheatDisplay = document.getElementById("cheat-count");
-        showQuestion(currentQuestion);
+        // showQuestion(currentQuestion);
+        // to show question
+        questionSpace.innerHTML = `
+  <p>Q${index + 1}: ${questions[index].question}</p>
+  <label><input type="checkbox" name="q${index}" value="a" /> ${
+          questions[index].a
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="b" /> ${
+          questions[index].b
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="c" /> ${
+          questions[index].c
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="d" /> ${
+          questions[index].d
+        }</label>
+`;
+
         setupAntiCheat();
         startTimer();
       })
@@ -88,12 +127,23 @@ if (!submit) {
       });
   });
 }
-function showQuestion(index) {
-  questions.forEach((q, i) => {
-    document;
-    q.classList.remove("active", "hide");
-    q.classList.add(i === index ? "active" : "hide");
-  });
+function showQuestion() {
+          questionSpace.innerHTML = `
+  <p>Q${index + 1}: ${questions[index].question}</p>
+  <label><input type="checkbox" name="q${index}" value="a" /> ${
+          questions[index].a
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="b" /> ${
+          questions[index].b
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="c" /> ${
+          questions[index].c
+        }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="d" /> ${
+          questions[index].d
+        }</label>
+`;
+  
   const progressBarContainer = document.getElementById(
     "progress-bar-container"
   );
@@ -157,13 +207,23 @@ function showCheatWarning() {
 window.addEventListener(
   "keydown",
   function (e) {
-    // Prevent all keyboard input
-    if (e.key === "Escape") {
+    // List of all function keys and common hotkeys
+    const blockedKeys = [
+      "Escape", "F1", "F2", "F3", "F4", "F5", "F6", "F7",
+      "F8", "F9", "F10", "F11", "F12"
+    ];
+
+    // Prevent Ctrl/Alt/Meta combinations (hotkeys)
+    if (
+      e.ctrlKey || e.altKey || e.metaKey ||
+      blockedKeys.includes(e.key)
+    ) {
       e.preventDefault();
     }
   },
   true
 );
+
 
 function setupAntiCheat() {
   document.addEventListener("visibilitychange", () => {
@@ -179,8 +239,10 @@ function setupAntiCheat() {
         alert("Cheating limit reached. Auto-submitting your quiz.");
         autoSubmit("Cheated 3 times");
       } else {
-        currentQuestion = Math.min(currentQuestion + 1, questions.length - 1);
-        showQuestion(currentQuestion);
+        // currentQuestion = Math.min(currentQuestion + 1, questions.length - 1);
+        index = Math.min(index + 1, questions.length - 1);
+        // showQuestion(currentQuestion);
+           showQuestion();
       }
     }
   });
@@ -205,7 +267,7 @@ let extraSecond = 0;
 function startTimer() {
   const label = document.getElementById("timer-text");
   if (!label) return;
-  clearInterval(timer);  // crutial for timer to work properly
+  clearInterval(timer); // crutial for timer to work properly
   timeLeft = 30;
   timer = setInterval(() => {
     timeLeft--;
@@ -214,8 +276,7 @@ function startTimer() {
     label.textContent = `${minutes}:${seconds}`;
 
     if (timeLeft <= 0) {
-      clearInterval(timer);  // crutial for timer to work propely
-
+      clearInterval(timer); // crutial for timer to work propely
 
       if (currentQuestion === questions.length - 1) {
         autoSubmit("Time's up on last question");
@@ -233,14 +294,7 @@ function submitForm(auto = false) {
   const submitBtn = document.getElementById("submitBtn");
   if (submitBtn) submitBtn.disabled = true;
 
-  const answers = {
-    q1: document.querySelector('input[name="q1"]:checked')?.value,
-    q2: document.querySelector('input[name="q2"]:checked')?.value,
-    q3: document.querySelector('input[name="q3"]:checked')?.value,
-    q4: document.querySelector('input[name="q4"]:checked')?.value,
-    q5: document.querySelector('input[name="q5"]:checked')?.value,
-  };
-  console.log(score);
+  
 
   fetch(submitURL, {
     method: "POST",
@@ -249,16 +303,10 @@ function submitForm(auto = false) {
       branch: document.getElementById("branch").value,
       year: document.getElementById("year").value,
       email: document.getElementById("email").value,
-      answers: [
-        answers.q1 || "",
-        answers.q2 || "",
-        answers.q3 || "",
-        answers.q4 || "",
-        answers.q5 || "",
-      ],
+      
       cheatCount: cheatCount,
-      score: score,
-      timeTaken: totalTime - timeLeft,
+      score: globalScore,
+      
     }),
     headers: { "Content-Type": "application/json" },
   })
@@ -273,37 +321,59 @@ function submitForm(auto = false) {
     .catch((err) => console.log(`ERROR: ${err}`));
 }
 
-const correctAnswers = ["a", "b", "c", "a", "b"];
+
 
 window.nextQuestion = () => {
-  if (!isLocked && currentQuestion < questions.length - 1) {
-    const selected = document
-      .querySelector(`input[name="q${currentQuestion + 1}"]:checked`)
-      ?.value?.toLowerCase();
+    const selectedOptions = document.querySelectorAll(
+      `input[name="q${index}"]:checked`
+    );
+    const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
 
-    if (selected && selected === correctAnswers[currentQuestion]) {
-      score++;
+    const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
+
+    // Compare both arrays (ignoring order)
+    const isCorrect =
+      userAnswers.length === correctAnswers.length &&
+      userAnswers.every((val) => correctAnswers.includes(val));
+
+    if (isCorrect) {
+      globalScore++;
+    }
+    timeFlag++;
+    // currentQuestion++;
+    index++;
+
+    if(index >= questions.length) {
+      autoSubmit("Finished all questions");
+      return;
+    }
+    if(index === questions.length - 1){
+      document.getElementById("submitBtn").classList.remove("hide");
+      
     }
 
-    timeFlag++;
-    currentQuestion++;
+    // showQuestion(currentQuestion);
+      showQuestion();
 
-    showQuestion(currentQuestion);  // crutial for timer to work propely
+    // crutial for timer to work propely
     clearInterval(timer);
     startTimer();
-  }
-};
 
-window.checkQuestion = (index, answer) => {
-  if (index < 0 || index >= questions.length) return;
-  const question = questions[index];
-  const correctAnswer = question.getAttribute("data-answer");
-  const answerDisplay = question.querySelector(".answer-display");
-  if (answer === correctAnswer) {
-    answerDisplay.textContent = "Correct!";
-    answerDisplay.style.color = "green";
-  } else {
-    answerDisplay.textContent = `Incorrect! The correct answer was: ${correctAnswer}`;
-    answerDisplay.style.color = "red";
+    
   }
-};
+
+  // document.getElementById("submitBtn").addEventListener('click', submitForm());
+
+    const btn = document.getElementById("submitBtn");
+    if(btn){
+      btn.addEventListener('click', submitForm);
+    }
+
+
+    const btn2 = document.getElementById("re-enter");
+    if(btn2){
+      btn2.addEventListener('click', forceFullscreen);
+    }
+
+
+// dynamic questions showing

@@ -29,7 +29,7 @@
       <h2>⚠️ Fullscreen Required</h2>
       <p>You exited fullscreen. Click below to continue.</p>
       <button
-        onclick="forceFullscreen()"
+        id="re-enter"
         style="padding: 10px 20px; font-size: 16px"
       >
         Re-enter Fullscreen
@@ -103,8 +103,8 @@
             text-align: center;
           "
         ></p>
-
-        <div class="question active">
+            <div class="question"></div>
+        <!-- <div class="question active">
           <p>Q1: What is AI?</p>
           <label
             ><input type="radio" name="q1" value="a" /> Artificial
@@ -151,20 +151,22 @@
           <label><input type="radio" name="q5" value="a" /> Google Maps</label>
           <label><input type="radio" name="q5" value="b" /> WhatsApp</label>
           <label><input type="radio" name="q5" value="c" /> Calculator</label>
-        </div>
+        </div> -->
 
         <div class="nav-buttons">
-          <button type="button" class="btn" onclick="nextQuestion()">
+          <button type="button hide" class="btn" onclick="nextQuestion()">
             Next &rarr;
           </button>
         </div>
 
         <div id="submit-btn-container">
           <button
+            
             id="submitBtn"
             type="button"
-            class="btn"
-            onclick="submitForm()"
+            class="btn hide"
+            
+            
           >
             Submit
           </button>
@@ -172,6 +174,6 @@
       </div>
     </div>
 
-    <script src="/script.js"></script>
+    <script type="module" src="/script.js"></script>
   </body>
 </html>
