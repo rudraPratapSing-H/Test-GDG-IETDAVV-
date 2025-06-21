@@ -122,20 +122,31 @@ if (!submit) {
         alert("Please enter full screen to continue. ");
       });
   });
-}
+}  
+    let type = "radio"; 
+    let category = "mcq";
 function showQuestion() {
+   if(questions[index].correct.length === 1){
+    type = "radio";
+    category = "MCQ";
+   }
+   else if(questions[index].correct.length > 1){
+    type = "checkbox";
+    category = "MSQ";
+   }
+
   questionSpace.innerHTML = `
-  <p>Q${index + 1}: ${questions[index].question}</p>
-  <label><input type="checkbox" name="q${index}" value="a" /> ${
+  <p>Q${index + 1}: ${questions[index].question} type:-${category} </p>
+  <label><input type=${type} name="q${index}" value="a" /> ${
     questions[index].a
   }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="b" /> ${
+  <label><input type=${type} name="q${index}" value="b" /> ${
     questions[index].b
   }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="c" /> ${
+  <label><input type=${type} name="q${index}" value="c" /> ${
     questions[index].c
   }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="d" /> ${
+  <label><input type=${type} name="q${index}" value="d" /> ${
     questions[index].d
   }</label>
 `;
