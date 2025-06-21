@@ -262,7 +262,16 @@ window.addEventListener(
       e.preventDefault();
       e.stopPropagation();
       warnSound();
-      // cheatCount++;
+      cheatCount++;
+      if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
+      if (cheatDisplay)
+        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+
+      showCheatWarning();
+      reportCheating("Pressed undesired keys!");
+      if (cheatCount >= 3) {
+        alert("Cheating limit reached. Auto-submitting your quiz.");
+        autoSubmit("Cheated 3 times");}
       return false;
     }
   },
@@ -282,37 +291,47 @@ window.addEventListener(
     e.preventDefault();
     warningSound.currentTime = 0;
     warningSound.play();
-    // cheatCount++;
+    cheatCount++;
+    if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
+      if (cheatDisplay)
+        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+
+      showCheatWarning();
+      reportCheating("Pressed undesired keys!");
 
     // ⏱️ Stop sound after 1.5 seconds
     setTimeout(() => {
       warningSound.pause();
       warningSound.currentTime = 0;
     }, 3000);
+
+    if (cheatCount >= 3) {
+        alert("Cheating limit reached. Auto-submitting your quiz.");
+        autoSubmit("Cheated 3 times");}
   });
 });
 
 function setupAntiCheat() {
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-      cheatCount++;
-      if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
-      if (cheatDisplay)
-        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
-      showCheatWarncEing();
-      reportCheating("Tab switched");
+  // document.addEventListener("visibilitychange", () => {
+  //   if (document.visibilityState === "hidden") {
+  //     cheatCount++;
+  //     if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
+  //     if (cheatDisplay)
+  //       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+  //     showCheatWarncEing();
+  //     reportCheating("Tab switched");
 
-      if (cheatCount >= 3) {
-        alert("Cheating limit reached. Auto-submitting your quiz.");
-        autoSubmit("Cheated 3 times");
-      } else {
-        // currentQuestion = Math.min(currentQuestion + 1, questions.length - 1);
-        index = Math.min(index + 1, questions.length - 1);
-        // showQuestion(currentQuestion);
-        showQuestion();
-      }
-    }
-  });
+  //     if (cheatCount >= 3) {
+  //       alert("Cheating limit reached. Auto-submitting your quiz.");
+  //       autoSubmit("Cheated 3 times");
+  //     } else {
+  //       // currentQuestion = Math.min(currentQuestion + 1, questions.length - 1);
+  //       index = Math.min(index + 1, questions.length - 1);
+  //       // showQuestion(currentQuestion);
+  //       showQuestion();
+  //     }
+  //   }
+  // });
 
   document.addEventListener("fullscreenchange", () => {
     if (!document.fullscreenElement && !isLocked && !submit) {
@@ -371,7 +390,10 @@ function submitForm(auto = false) {
   submit = true;
   const submitBtn = document.getElementById("submitBtn");
   if (submitBtn) submitBtn.disabled = true;
+  
+      window.location.href = "/thankyou.html";
 
+      
   fetch(submitURL, {
     method: "POST",
     body: JSON.stringify({
@@ -391,7 +413,6 @@ function submitForm(auto = false) {
       document.removeEventListener("fullscreenchange", setupAntiCheat);
       clearInterval(timer);
       isLocked = true;
-      window.location.href = "/thankyou.html";
     })
     .catch((err) => console.log(`ERROR: ${err}`));
 }
