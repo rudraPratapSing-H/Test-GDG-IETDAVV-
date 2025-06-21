@@ -27,12 +27,22 @@ const quizSection = document.getElementById("quiz-section");
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
+window.onload = function () {
+  const isBlocked = localStorage.getItem("blockOnload");
+
+  if (isBlocked) {
+    console.log("window.onload blocked by localStorage");
+    return;
+  }
+
+  // Your actual onload logic
+  console.log("window.onload ran!");
+};
 
 function forceFullscreen() {
   requestFullscreen()
     .then(() => {
       document.getElementById("fs-exit-overlay").style.display = "none";
-      cheatCount++;
 
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
       // showCheatWarning();
@@ -83,6 +93,7 @@ let currentQuestion = 0;
 if (!submit) {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
+    blockOnload();
     const email = document.getElementById("email").value.trim();
     const emailPattern = /^[0-2][0-9][a-z]{3}[0-9]{3}@ietdavv\.edu\.in$/;
 
@@ -122,18 +133,17 @@ if (!submit) {
         alert("Please enter full screen to continue. ");
       });
   });
-}  
-    let type = "radio"; 
-    let category = "mcq";
+}
+let type = "radio";
+let category = "mcq";
 function showQuestion() {
-   if(questions[index].correct.length === 1){
+  if (questions[index].correct.length === 1) {
     type = "radio";
     category = "MCQ";
-   }
-   else if(questions[index].correct.length > 1){
+  } else if (questions[index].correct.length > 1) {
     type = "checkbox";
     category = "MSQ";
-   }
+  }
 
   questionSpace.innerHTML = `
   <p>Q${index + 1}: ${questions[index].question} type:-${category} </p>
@@ -188,9 +198,7 @@ function autoSubmit(reason) {
 function showCheatWarning() {
   const warning = document.getElementById("cheat-warning");
   if (warning) {
-    warning.innerText = `⚠️ Don't try to switch tab or escape the full screen. You already switched ${
-      cheatCount + 1
-    } time(s). It will auto-submit after 3 attempts.`;
+    warning.innerText = `⚠️ Don't try to switch tab or escape the full screen. You already switched ${cheatCount} time(s). It will auto-submit after 3 attempts.`;
     warning.style.display = "block";
     warning.style.color = "red";
     warning.style.fontWeight = "bold";
@@ -209,14 +217,24 @@ function showCheatWarning() {
   }
 }
 
+function warnSound() {
+  warningSound.currentTime = 0;
+  warningSound.play();
+
+  // ⏱️ Stop sound after 1.5 seconds
+  setTimeout(() => {
+    warningSound.pause();
+    warningSound.currentTime = 0;
+  }, 3000);
+}
+
 //block all keys
 
 window.addEventListener(
   "keydown",
   function (e) {
-    // List of all function keys and common hotkeys
+    // Block all function keys and modifier combinations
     const blockedKeys = [
-      "Escape",
       "F1",
       "F2",
       "F3",
@@ -229,15 +247,50 @@ window.addEventListener(
       "F10",
       "F11",
       "F12",
+      "Escape",
+      "Tab",
     ];
 
-    // Prevent Ctrl/Alt/Meta combinations (hotkeys)
-    if (e.ctrlKey || e.altKey || e.metaKey || blockedKeys.includes(e.key)) {
+    // Block function keys or any Ctrl/Shift/Alt/Meta combination
+    if (
+      blockedKeys.includes(e.key) ||
+      e.ctrlKey ||
+      e.altKey ||
+      e.metaKey ||
+      e.shiftKey
+    ) {
       e.preventDefault();
+      e.stopPropagation();
+      warnSound();
+      // cheatCount++;
+      return false;
     }
   },
   true
 );
+
+[
+  "contextmenu",
+  "copy",
+  "paste",
+  "cut",
+  "selectstart",
+  "dragstart",
+  "drop",
+].forEach((evt) => {
+  window.addEventListener(evt, (e) => {
+    e.preventDefault();
+    warningSound.currentTime = 0;
+    warningSound.play();
+    // cheatCount++;
+
+    // ⏱️ Stop sound after 1.5 seconds
+    setTimeout(() => {
+      warningSound.pause();
+      warningSound.currentTime = 0;
+    }, 3000);
+  });
+});
 
 function setupAntiCheat() {
   document.addEventListener("visibilitychange", () => {
@@ -246,10 +299,10 @@ function setupAntiCheat() {
       if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
       if (cheatDisplay)
         cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
-      showCheatWarning();
+      showCheatWarncEing();
       reportCheating("Tab switched");
 
-      if (cheatCount > 3) {
+      if (cheatCount >= 3) {
         alert("Cheating limit reached. Auto-submitting your quiz.");
         autoSubmit("Cheated 3 times");
       } else {
@@ -263,10 +316,21 @@ function setupAntiCheat() {
 
   document.addEventListener("fullscreenchange", () => {
     if (!document.fullscreenElement && !isLocked && !submit) {
-      // Show overlay or message
+      cheatCount++;
+      if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
+      if (cheatDisplay)
+        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+
       showCheatWarning();
-      const overlay = document.getElementById("fs-exit-overlay");
-      overlay.style.display = "flex"; // or "block"
+      reportCheating("Exited fullscreen");
+
+      if (cheatCount >= 3) {
+        alert("Cheating limit reached. Auto-submitting.");
+        autoSubmit("Exited fullscreen 3 times");
+      } else {
+        const overlay = document.getElementById("fs-exit-overlay");
+        if (overlay) overlay.style.display = "flex";
+      }
     }
   });
 
@@ -383,3 +447,9 @@ if (btn2) {
 }
 
 // dynamic questions showing
+
+// function for preventing window loading
+function blockOnload() {
+  localStorage.setItem("blockOnload", "true");
+  console.log("Next time, window.onload will be blocked!");
+}
