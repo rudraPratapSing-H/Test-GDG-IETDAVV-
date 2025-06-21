@@ -1,4 +1,3 @@
-
 import { questions } from "./data.js";
 
 const BASE_URL = window.location.origin;
@@ -25,12 +24,9 @@ let index = 0;
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
 
-
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
-
-
 
 function forceFullscreen() {
   requestFullscreen()
@@ -41,21 +37,21 @@ function forceFullscreen() {
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
       // showCheatWarning();
       //showQuestion(currentQuestion);
-      
-              questionSpace.innerHTML = `
+
+      questionSpace.innerHTML = `
   <p>Q${index + 1}: ${questions[index].question}</p>
   <label><input type="checkbox" name="q${index}" value="a" /> ${
-          questions[index].a
-        }</label><br/>
+        questions[index].a
+      }</label><br/>
   <label><input type="checkbox" name="q${index}" value="b" /> ${
-          questions[index].b
-        }</label><br/>
+        questions[index].b
+      }</label><br/>
   <label><input type="checkbox" name="q${index}" value="c" /> ${
-          questions[index].c
-        }</label><br/>
+        questions[index].c
+      }</label><br/>
   <label><input type="checkbox" name="q${index}" value="d" /> ${
-          questions[index].d
-        }</label>
+        questions[index].d
+      }</label>
 `;
 
       reportCheating("Exited fullscreen");
@@ -128,22 +124,22 @@ if (!submit) {
   });
 }
 function showQuestion() {
-          questionSpace.innerHTML = `
+  questionSpace.innerHTML = `
   <p>Q${index + 1}: ${questions[index].question}</p>
   <label><input type="checkbox" name="q${index}" value="a" /> ${
-          questions[index].a
-        }</label><br/>
+    questions[index].a
+  }</label><br/>
   <label><input type="checkbox" name="q${index}" value="b" /> ${
-          questions[index].b
-        }</label><br/>
+    questions[index].b
+  }</label><br/>
   <label><input type="checkbox" name="q${index}" value="c" /> ${
-          questions[index].c
-        }</label><br/>
+    questions[index].c
+  }</label><br/>
   <label><input type="checkbox" name="q${index}" value="d" /> ${
-          questions[index].d
-        }</label>
+    questions[index].d
+  }</label>
 `;
-  
+
   const progressBarContainer = document.getElementById(
     "progress-bar-container"
   );
@@ -209,21 +205,28 @@ window.addEventListener(
   function (e) {
     // List of all function keys and common hotkeys
     const blockedKeys = [
-      "Escape", "F1", "F2", "F3", "F4", "F5", "F6", "F7",
-      "F8", "F9", "F10", "F11", "F12"
+      "Escape",
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F7",
+      "F8",
+      "F9",
+      "F10",
+      "F11",
+      "F12",
     ];
 
     // Prevent Ctrl/Alt/Meta combinations (hotkeys)
-    if (
-      e.ctrlKey || e.altKey || e.metaKey ||
-      blockedKeys.includes(e.key)
-    ) {
+    if (e.ctrlKey || e.altKey || e.metaKey || blockedKeys.includes(e.key)) {
       e.preventDefault();
     }
   },
   true
 );
-
 
 function setupAntiCheat() {
   document.addEventListener("visibilitychange", () => {
@@ -242,7 +245,7 @@ function setupAntiCheat() {
         // currentQuestion = Math.min(currentQuestion + 1, questions.length - 1);
         index = Math.min(index + 1, questions.length - 1);
         // showQuestion(currentQuestion);
-           showQuestion();
+        showQuestion();
       }
     }
   });
@@ -294,8 +297,6 @@ function submitForm(auto = false) {
   const submitBtn = document.getElementById("submitBtn");
   if (submitBtn) submitBtn.disabled = true;
 
-  
-
   fetch(submitURL, {
     method: "POST",
     body: JSON.stringify({
@@ -303,10 +304,9 @@ function submitForm(auto = false) {
       branch: document.getElementById("branch").value,
       year: document.getElementById("year").value,
       email: document.getElementById("email").value,
-      
+
       cheatCount: cheatCount,
       score: globalScore,
-      
     }),
     headers: { "Content-Type": "application/json" },
   })
@@ -321,59 +321,54 @@ function submitForm(auto = false) {
     .catch((err) => console.log(`ERROR: ${err}`));
 }
 
-
-
 window.nextQuestion = () => {
-    const selectedOptions = document.querySelectorAll(
-      `input[name="q${index}"]:checked`
-    );
-    const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
+  const selectedOptions = document.querySelectorAll(
+    `input[name="q${index}"]:checked`
+  );
+  const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
 
-    const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
+  const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
 
-    // Compare both arrays (ignoring order)
-    const isCorrect =
-      userAnswers.length === correctAnswers.length &&
-      userAnswers.every((val) => correctAnswers.includes(val));
+  // Compare both arrays (ignoring order)
+  const isCorrect =
+    userAnswers.length === correctAnswers.length &&
+    userAnswers.every((val) => correctAnswers.includes(val));
 
-    if (isCorrect) {
-      globalScore++;
-    }
-    timeFlag++;
-    // currentQuestion++;
-    index++;
+  if (isCorrect) {
+    console.log("Correct answer!");
 
-    if(index >= questions.length) {
-      autoSubmit("Finished all questions");
-      return;
-    }
-    if(index === questions.length - 1){
-      document.getElementById("submitBtn").classList.remove("hide");
-      
-    }
+    globalScore++;
+  }
+  timeFlag++;
+  // currentQuestion++;
+  index++;
 
-    // showQuestion(currentQuestion);
-      showQuestion();
-
-    // crutial for timer to work propely
-    clearInterval(timer);
-    startTimer();
-
-    
+  if (index >= questions.length) {
+    autoSubmit("Finished all questions");
+    return;
+  }
+  if (index === questions.length - 1) {
+    document.getElementById("submitBtn").classList.remove("hide");
   }
 
-  // document.getElementById("submitBtn").addEventListener('click', submitForm());
+  // showQuestion(currentQuestion);
+  showQuestion();
 
-    const btn = document.getElementById("submitBtn");
-    if(btn){
-      btn.addEventListener('click', submitForm);
-    }
+  // crutial for timer to work propely
+  clearInterval(timer);
+  startTimer();
+};
 
+// document.getElementById("submitBtn").addEventListener('click', submitForm());
 
-    const btn2 = document.getElementById("re-enter");
-    if(btn2){
-      btn2.addEventListener('click', forceFullscreen);
-    }
+const btn = document.getElementById("submitBtn");
+if (btn) {
+  btn.addEventListener("click", submitForm);
+}
 
+const btn2 = document.getElementById("re-enter");
+if (btn2) {
+  btn2.addEventListener("click", forceFullscreen);
+}
 
 // dynamic questions showing
