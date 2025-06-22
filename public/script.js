@@ -29,18 +29,18 @@ const warningSound = new Audio(
 );
 
 
-window.onload = function () {
-  const alreadySubmitted = localStorage.getItem("formSubmitted");
+// window.onload = function () {
+//   const alreadySubmitted = localStorage.getItem("formSubmitted");
 
-  if (alreadySubmitted) {
-    alert("You have already attempted this quiz from this device.");
-    window.location.href = "/thankyou.html";
+//   if (alreadySubmitted) {
+//     alert("You have already attempted this quiz from this device.");
+//     window.location.href = "/thankyou.html";
     
-    return;
-  }
+//     return;
+//   }
 
-  console.log("window.onload ran!");
-};
+//   console.log("window.onload ran!");
+// };
 
 
 
