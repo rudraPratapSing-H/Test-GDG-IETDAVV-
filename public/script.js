@@ -374,7 +374,7 @@ function startTimer() {
     if (timeLeft <= 0) {
       clearInterval(timer); // crutial for timer to work propely
 
-      if (currentQuestion === questions.length - 1) {
+      if (index === questions.length - 1) {
         autoSubmit("Time's up on last question");
       } else {
         extraSecond++;
