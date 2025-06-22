@@ -14,7 +14,7 @@ let cheatDisplay;
 let timeFlag = 0;
 
 let submit = false;
-
+let keylock = false;
 let keyBlock = false;
 // question showing credentials
 let globalScore = 0;
@@ -27,17 +27,23 @@ const quizSection = document.getElementById("quiz-section");
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
-window.onload = function () {
-  const isBlocked = localStorage.getItem("blockOnload");
 
-  if (isBlocked) {
-    console.log("window.onload blocked by localStorage");
+
+window.onload = function () {
+  const alreadySubmitted = localStorage.getItem("formSubmitted");
+
+  if (alreadySubmitted) {
+    alert("You have already attempted this quiz from this device.");
+    window.location.href = "/thankyou.html";
+    
     return;
   }
 
-  // Your actual onload logic
   console.log("window.onload ran!");
 };
+
+
+
 
 function forceFullscreen() {
   requestFullscreen()
@@ -101,7 +107,12 @@ if (!submit) {
       alert("Invalid email! Use your IET-DAVV email.");
       return;
     }
+    
+    localStorage.setItem("formSubmitted", "true");
 
+
+
+    keylock = true;
     keyBlock = true;
     requestFullscreen()
       .then(() => {
@@ -229,11 +240,11 @@ function warnSound() {
 }
 
 //block all keys
-
 window.addEventListener(
   "keydown",
   function (e) {
-    // Block all function keys and modifier combinations
+    if (!keylock) return;
+
     const blockedKeys = [
       "F1",
       "F2",
@@ -251,7 +262,6 @@ window.addEventListener(
       "Tab",
     ];
 
-    // Block function keys or any Ctrl/Shift/Alt/Meta combination
     if (
       blockedKeys.includes(e.key) ||
       e.ctrlKey ||
@@ -271,7 +281,8 @@ window.addEventListener(
       reportCheating("Pressed undesired keys!");
       if (cheatCount >= 3) {
         alert("Cheating limit reached. Auto-submitting your quiz.");
-        autoSubmit("Cheated 3 times");}
+        autoSubmit("Cheated 3 times");
+      }
       return false;
     }
   },
@@ -288,26 +299,28 @@ window.addEventListener(
   "drop",
 ].forEach((evt) => {
   window.addEventListener(evt, (e) => {
+    if (!keylock) return;
+
     e.preventDefault();
     warningSound.currentTime = 0;
     warningSound.play();
     cheatCount++;
     if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
-      if (cheatDisplay)
-        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+    if (cheatDisplay)
+      cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
 
-      showCheatWarning();
-      reportCheating("Pressed undesired keys!");
+    showCheatWarning();
+    reportCheating("Pressed undesired keys!");
 
-    // ⏱️ Stop sound after 1.5 seconds
     setTimeout(() => {
       warningSound.pause();
       warningSound.currentTime = 0;
     }, 3000);
 
     if (cheatCount >= 3) {
-        alert("Cheating limit reached. Auto-submitting your quiz.");
-        autoSubmit("Cheated 3 times");}
+      alert("Cheating limit reached. Auto-submitting your quiz.");
+      autoSubmit("Cheated 3 times");
+    }
   });
 });
 
@@ -390,10 +403,27 @@ function submitForm(auto = false) {
   submit = true;
   const submitBtn = document.getElementById("submitBtn");
   if (submitBtn) submitBtn.disabled = true;
-  
-      window.location.href = "/thankyou.html";
 
-      
+  const selectedOptions = document.querySelectorAll(
+    `input[name="q${index}"]:checked`
+  );
+  const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
+
+  const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
+
+  // Compare both arrays (ignoring order)
+  const isCorrect =
+    userAnswers.length === correctAnswers.length &&
+    userAnswers.every((val) => correctAnswers.includes(val));
+
+  if (isCorrect) {
+    console.log("Correct answer!");
+
+    globalScore++;
+  }
+
+  window.location.href = "/thankyou.html";
+
   fetch(submitURL, {
     method: "POST",
     body: JSON.stringify({
@@ -416,6 +446,8 @@ function submitForm(auto = false) {
     })
     .catch((err) => console.log(`ERROR: ${err}`));
 }
+
+// document.getElementById("submitBtn").addEventListener('click', submitForm());
 
 window.nextQuestion = () => {
   const selectedOptions = document.querySelectorAll(
@@ -454,8 +486,6 @@ window.nextQuestion = () => {
   clearInterval(timer);
   startTimer();
 };
-
-// document.getElementById("submitBtn").addEventListener('click', submitForm());
 
 const btn = document.getElementById("submitBtn");
 if (btn) {
