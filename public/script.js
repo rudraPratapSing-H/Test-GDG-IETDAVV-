@@ -119,23 +119,9 @@ if (!submit) {
         form.style.display = "none";
         quizSection.style.display = "block";
         cheatDisplay = document.getElementById("cheat-count");
-        // showQuestion(currentQuestion);
+        showQuestion();
         // to show question
-        questionSpace.innerHTML = `
-  <p>Q${index + 1}: ${questions[index].question}</p>
-  <label><input type="checkbox" name="q${index}" value="a" /> ${
-          questions[index].a
-        }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="b" /> ${
-          questions[index].b
-        }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="c" /> ${
-          questions[index].c
-        }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="d" /> ${
-          questions[index].d
-        }</label>
-`;
+  
 
         setupAntiCheat();
         startTimer();
@@ -157,7 +143,7 @@ function showQuestion() {
   }
 
   questionSpace.innerHTML = `
-  <p>Q${index + 1}: ${questions[index].question} type:-${category} </p>
+  <p>Q${index + 1}: ${questions[index].question} (${category}) </p>
   <label><input type=${type} name="q${index}" value="a" /> ${
     questions[index].a
   }</label><br/>
