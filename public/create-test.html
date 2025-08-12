@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Create Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        background: #f7fbff;
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .container {
+        max-width: 420px;
+        width: 100%;
+        margin: 32px 0;
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(33,150,243,0.10);
+        padding: 32px 20px 24px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .form-title {
+        font-weight: 700;
+        color: #1769aa;
+        margin-bottom: 18px;
+        text-align: center;
+        font-size: 1.5em;
+        letter-spacing: 0.5px;
+      }
+      .form-label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 500;
+        color: #334155;
+        font-size: 1em;
+      }
+      .form-input,
+      .form-textarea,
+      .form-select {
+        width: 100%;
+        padding: 10px 12px;
+        margin-bottom: 16px;
+        border: 1.2px solid #c3e0f7;
+        border-radius: 8px;
+        background: #f7fbff;
+        font-size: 15px;
+        transition: border 0.2s;
+      }
+      .form-input:focus,
+      .form-textarea:focus,
+      .form-select:focus {
+        border-color: #2196f3;
+        outline: none;
+      }
+      .form-textarea {
+        resize: vertical;
+      }
+      .form-button {
+        background: #2196f3;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 0;
+        font-size: 1em;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 8px;
+        width: 100%;
+        transition: background 0.2s;
+      }
+      .form-button:hover {
+        background: #1769aa;
+      }
+      .btn-home {
+        background: #fff;
+        color: #2196f3;
+        border: 1.2px solid #2196f3;
+        border-radius: 8px;
+        padding: 10px 0;
+        font-size: 1em;
+        font-weight: 500;
+        width: 100%;
+        margin-top: 8px;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      .btn-home:hover {
+        background: #2196f3;
+        color: #fff;
+      }
+      .optional {
+        font-size: 12px;
+        color: #888;
+        font-style: italic;
+        margin-left: 2px;
+      }
+      .required {
+        color: #d32f2f;
+        margin-left: 2px;
+      }
+      .timer-block {
+        margin-bottom: 16px;
+      }
+      .timer-radio-group {
+        display: flex;
+        gap: 18px;
+        margin-bottom: 10px;
+      }
+      @media (max-width: 600px) {
+        .container {
+          padding: 16px 4vw;
+          margin: 10px 0;
+        }
+        .form-title {
+          font-size: 1.1em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="form-title">Create Test</h1>
+      <form>
+        <label class="form-label">
+          Test Name <span class="required">*</span>
+        </label>
+        <input
+          class="form-input"
+          type="text"
+          placeholder="Enter the test name"
+          name="test-name"
+          required
+        />
+
+        <label class="form-label">
+          Test Description <span class="optional">(optional)</span>
+        </label>
+        <textarea
+          class="form-textarea"
+          rows="2"
+          placeholder="Brief description (optional)"
+          name="test-description"
+        ></textarea>
+
+        <label class="form-label">
+          Questions (PDF or JSON) <span class="required">*</span>
+        </label>
+        <input
+          class="form-input"
+          type="file"
+          accept=".pdf,application/pdf,.json,application/json"
+          required
+          name="json"
+        />
+
+        <div class="timer-block">
+          <label class="form-label">
+            Timer Type <span class="required">*</span>
+          </label>
+          <div class="timer-radio-group">
+            <label>
+              <input
+                type="radio"
+                name="timer-type"
+                value="overall"
+                required
+                checked
+                onclick="toggleTimerInputs()"
+              />
+              Overall Duration
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="timer-type"
+                value="per-question"
+                onclick="toggleTimerInputs()"
+              />
+              Per Question Timer
+            </label>
+          </div>
+          <div id="overall-timer-block">
+            <label class="form-label">
+              Test Duration (minutes) <span class="required">*</span>
+            </label>
+            <input
+              class="form-input"
+              type="number"
+              min="1"
+              placeholder="Duration in minutes"
+              id="overall-timer-input"
+              required
+            />
+          </div>
+          <div id="per-question-timer-block" style="display: none">
+            <label class="form-label">
+              Per Question Timer (seconds) <span class="required">*</span>
+            </label>
+            <input
+              class="form-input"
+              type="number"
+              min="1"
+              placeholder="Seconds per question"
+              id="per-question-timer-input"
+            />
+          </div>
+        </div>
+
+        <label class="form-label">
+          Maximum Allowed Cheat Count <span class="required">*</span>
+        </label>
+        <input
+          class="form-input"
+          type="number"
+          min="0"
+          placeholder="Max cheat count (e.g., 3)"
+          name="cheat-count"
+          required
+        />
+
+        <label class="form-label">
+          Allow Keyboard During Test? <span class="required">*</span>
+        </label>
+        <select class="form-select" required>
+          <option value="">Select</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+
+        <label class="form-label">
+          Google Sheet URL <span class="required">*</span>
+        </label>
+        <input
+          class="form-input"
+          type="url"
+          name="sheetUrl"
+          placeholder="Paste your Google Sheet URL"
+          required
+        />
+
+        <label class="form-label">
+          Rules <span class="optional">(optional)</span>
+        </label>
+        <textarea
+          class="form-textarea"
+          rows="2"
+          placeholder="Any special rules (optional)"
+        ></textarea>
+
+        <button class="form-button" type="submit">Create Test</button>
+        <button
+          class="form-button"
+          type="button"
+          onclick="window.location.href='dashboard/dashboard.html'"
+        >
+          Go to Dashboard
+        </button>
+        <button class="btn-home" type="button" onclick="window.location.href='/page.html'">
+          Go to Homepage
+        </button>
+      </form>
+    </div>
+    <script type="module" src="script2.js"></script>
+    <script>
+      function toggleTimerInputs() {
+        const overallBlock = document.getElementById("overall-timer-block");
+        const perQBlock = document.getElementById("per-question-timer-block");
+        const overallInput = document.getElementById("overall-timer-input");
+        const perQInput = document.getElementById("per-question-timer-input");
+        const timerType = document.querySelector(
+          'input[name="timer-type"]:checked'
+        ).value;
+
+        if (timerType === "overall") {
+          overallBlock.style.display = "";
+          perQBlock.style.display = "none";
+          overallInput.required = true;
+          perQInput.required = false;
+          perQInput.value = "";
+        } else {
+          overallBlock.style.display = "none";
+          perQBlock.style.display = "";
+          overallInput.required = false;
+          perQInput.required = true;
+          overallInput.value = "";
+        }
+      }
+      document.addEventListener("DOMContentLoaded", toggleTimerInputs);
+    </script>
+  </body>
+</html>

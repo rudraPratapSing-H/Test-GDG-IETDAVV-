@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Auth App</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7fbff;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .login-container {
+        background: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(33,150,243,0.08);
+        padding: 32px 24px 24px 24px;
+        width: 100%;
+        max-width: 340px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        align-items: center;
+      }
+      h2 {
+        margin: 0 0 12px 0;
+        color: #1769aa;
+        font-size: 1.3em;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      input[type="text"], input[type="password"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1.2px solid #c3e0f7;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        font-size: 15px;
+        background: #f7fbff;
+        transition: border-color 0.2s;
+      }
+      input[type="text"]:focus, input[type="password"]:focus {
+        border-color: #2196f3;
+        outline: none;
+      }
+      button {
+        width: 100%;
+        padding: 11px;
+        border: none;
+        background: #2196f3;
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 6px;
+        transition: background 0.2s;
+      }
+      button:hover {
+        background: #1769aa;
+      }
+      .footer-text {
+        font-size: 13px;
+        color: #555;
+        text-align: center;
+        margin-top: 6px;
+      }
+      .footer-text a {
+        color: #2196f3;
+        text-decoration: none;
+      }
+      .footer-text a:hover {
+        text-decoration: underline;
+      }
+      .btn-home {
+        margin-top: 10px;
+        background: #fff;
+        color: #2196f3;
+        border: 1.2px solid #2196f3;
+        border-radius: 8px;
+        padding: 8px 0;
+        font-size: 14px;
+        font-weight: 500;
+        width: 100%;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
+      }
+      .btn-home:hover {
+        background: #2196f3;
+        color: #fff;
+      }
+      @media (max-width: 500px) {
+        .login-container {
+          padding: 18px 4vw;
+          max-width: 98vw;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <h2>Sign Up</h2>
+      <input id="signupUser" placeholder="Username" autocomplete="username" />
+      <input id="signupPass" type="password" placeholder="Password" autocomplete="new-password" />
+      <button onclick="signup()">Sign Up</button>
+      <h2>Login</h2>
+      <input id="loginUser" placeholder="Username" autocomplete="username" />
+      <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password" />
+      <button onclick="login()">Login</button>
+      <div class="footer-text">
+        Forgot password? <a href="#">Contact admin</a>
+      </div>
+      <button class="btn-home" onclick="window.location.href='/page.html'">← Back to Home</button>
+    </div>
+    <script>
+      const API = "/api/auth";
+      async function signup() {
+        const username = document.getElementById("signupUser").value;
+        const password = document.getElementById("signupPass").value;
+        const res = await fetch(`${API}/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (data.message) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("username", username);
+          window.location.href = "create-test.html";
+        }
+        alert(data.message || data.error);
+      }
+      async function login() {
+        const username = document.getElementById("loginUser").value;
+        const password = document.getElementById("loginPass").value;
+        const res = await fetch(`${API}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password }),
+        });
+        const data = await res.json();
+        if (data.token) {
+          localStorage.removeItem("username");
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("username", username);
+          window.location.href = "create-test.html";
+          alert("Login successful!");
+        } else {
+          alert(data.error);
+        }
+      }
+    </script>
+  </body>
+</html>

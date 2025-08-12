@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Search Tests</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      
+      body {
+        background: #eaf6ff;
+        font-family: "Segoe UI", Arial, sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-container{
+        display: flex;
+        gap: 10px;
+      }
+      .search-container {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+        padding: 40px 32px;
+        display: flex;
+        flex-direction: column;
+        
+        min-width: 500px;
+        
+      }
+      .search-title {
+        font-size: 1.6em;
+        font-weight: 600;
+        color: #222;
+        margin-bottom: 28px;
+        text-align: center;
+      }
+      .search-bar-group {
+        display: flex;
+        width: 100%;
+        max-width: 350px;
+        gap: 10px;
+      }
+      .search-input {
+        flex: 1;
+        padding: 12px;
+        border: 1px solid #e0e7ef;
+        border-radius: 10px;
+        background: #f7fbff;
+        font-size: 16px;
+        transition: border 0.2s;
+      }
+      .search-input:focus {
+        border-color: #2196f3;
+        outline: none;
+      }
+      .search-btn {
+        background: #2196f3;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 28px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .search-btn:hover {
+        background: #1769aa;
+      }
+            .btn-home {
+        display: inline-block;
+        padding: 10px 24px;
+        border: 2px solid #4285f4;
+        color: #4285f4;
+        border-radius: 8px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: 0.3s ease;
+      }
+
+      .btn-home:hover {
+        background: #4285f4;
+        color: white;
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Add this inside your <body> in search.html, replacing the empty .search-container -->
+    <div class="search-container">
+      <div class="search-title">Search Tests</div>
+      <form class="search-bar-group" id="search-form">
+        <input
+          class="search-input"
+          type="text"
+          placeholder="Enter test name or keyword..."
+          required
+        />
+        <div class="btn-container"><button class="search-btn" type="submit">Go</button>
+        <button class="btn-home" onclick="window.location.href='/page.html'">Go to Homepage</button>
+</div>
+        
+      </form>
+      <div id="exam-result" style="width: 100%; margin-top: 32px"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("search-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const input = document.querySelector(".search-input");
+          const testName = input.value.trim();
+          const resultDiv = document.getElementById("exam-result");
+          resultDiv.innerHTML = "";
+          if (!testName) return;
+
+          fetch(`/api/examByName/${encodeURIComponent(testName)}`)
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.error) {
+                resultDiv.innerHTML = `<div style="color:#ef4444;text-align:center;">Test not found!</div>`;
+              } else {
+                localStorage.removeItem("name");
+                localStorage.setItem("name", data.name);
+                resultDiv.innerHTML = `
+          <div style="
+            background:#f1f5f9;
+            border-radius:14px;
+            box-shadow:0 2px 8px rgba(33,150,243,0.06);
+            padding:24px 20px;
+            margin:0 auto;
+            max-width:400px;
+            border:1px solid #e2e8f0;
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            align-items:center;
+          ">
+            <div style="font-size:1.2em;font-weight:600;color:#1e293b;">${
+              data.name
+            }</div>
+            <div style="font-size:1em;color:#334155;">Description: ${
+              data.description || "N/A"
+            }</div>
+            <div style="font-size:0.98em;color:#334155;">Date: ${new Date(
+              data.date
+            ).toLocaleString()}</div>
+            <div style="font-size:0.98em;color:#334155;">Cheat Attempts Allowed: ${
+              data.cheatCount
+            }</div>
+            <div style="font-size:0.98em;color:#334155;">Keyboard Allowed: ${
+              data.AllowingKeyboard ? "Yes" : "No"
+            }</div>
+          
+            <button class="search-btn" style="margin-top:18px;" onclick="window.location.href='/index.html?id=${
+              data._id
+            }'">Attempt</button>
+          </div>
+        `;
+              }
+            })
+            .catch(() => {
+              resultDiv.innerHTML = `<div style="color:#ef4444;text-align:center;">Error searching for test.</div>`;
+            });
+        });
+    </script>
+  </body>
+</html>
