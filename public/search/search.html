@@ -123,7 +123,10 @@
             .then((data) => {
               if (data.error) {
                 resultDiv.innerHTML = `<div style="color:#ef4444;text-align:center;">Test not found!</div>`;
-              } else {
+              } 
+              else if(data.isLive === false) {
+                resultDiv.innerHTML = `<div style="color:#ef4444;text-align:center;">Test is not live!</div>`;
+              } else {  
                 localStorage.removeItem("name");
                 localStorage.setItem("name", data.name);
                 resultDiv.innerHTML = `
