@@ -189,7 +189,6 @@
               <div class="test-meta">Date: ${new Date(test.date).toLocaleString()}</div>
               <div class="test-meta">Cheat Attempts Allowed: ${test.cheatCount}</div>
               <div class="test-meta">Keyboard Allowed: ${test.AllowingKeyboard ? "Yes" : "No"}</div>
-              <div class="test-meta">Google Sheet: <a href="${test.sheetUrl}" target="_blank">Open</a></div>
               <div class="test-meta">Status: <span class="status-badge ${test.isLive ? "status-live" : "status-killed"}">${test.isLive ? "Live" : "Killed"}</span></div>
               <div class="test-actions">
                 <button class="btn-delete">Delete</button>

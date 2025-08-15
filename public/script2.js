@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       .querySelector("textarea[placeholder*='special rules']")
       .value.trim();
     const cheatCount = parseInt(
-      form.querySelector('[name="cheat-count"]').value
+      form.querySelector('input[name="cheat-count"]').value
     );
 
     const allowKeyboard = form.querySelector(".form-select").value === "yes";
@@ -97,7 +97,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         body: uploadData,
       })
         .then((res) => res.json())
-        .then((data) => console.log("Success:", data))
+        .then((data) => {console.log("Success:", data) })
+        .then(() => {
+          window.location.href = "/dashboard.html";
+        })
+
         .catch((err) => console.log("Upload error:", err));
     }
     // uploadTest();

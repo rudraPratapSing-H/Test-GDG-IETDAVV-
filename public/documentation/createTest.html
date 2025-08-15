@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>How to Create a Test & Google Apps Script Integration</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #f7fbff;
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .guide-container {
+      max-width: 600px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+      padding: 32px 18px 24px 18px;
+      margin: 24px 0;
+    }
+    h1 {
+      color: #1769aa;
+      font-size: 1.7em;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+      letter-spacing: 0.5px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #2196f3;
+      font-size: 1em;
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+    .story {
+      background: #eaf6ff;
+      border-left: 3px solid #2196f3;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      color: #1769aa;
+      font-size: 1em;
+      font-style: italic;
+    }
+    h2 {
+      color: #2196f3;
+      font-size: 1.08em;
+      margin-top: 24px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    ol, ul {
+      margin-left: 18px;
+      margin-bottom: 14px;
+      font-size: 0.98em;
+    }
+    code, pre {
+      background: #f1f5f9;
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: 0.97em;
+      color: #1769aa;
+      display: block;
+      margin-bottom: 8px;
+      overflow-x: auto;
+    }
+    .note {
+      background: #eaf6ff;
+      border-left: 3px solid #2196f3;
+      padding: 8px 12px;
+      border-radius: 7px;
+      margin-bottom: 14px;
+      color: #1769aa;
+      font-size: 0.98em;
+    }
+    .pdf-template {
+      background: #fffbe6;
+      border-left: 3px solid #fbbf24;
+      padding: 8px 12px;
+      border-radius: 7px;
+      margin-bottom: 12px;
+      color: #b45309;
+      font-size: 0.97em;
+    }
+    .step-title {
+      font-weight: 600;
+      color: #1769aa;
+      margin-bottom: 4px;
+      font-size: 1em;
+    }
+    .action-btn {
+      background: #2196f3;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 32px;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 18px;
+      box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+    .action-btn:hover {
+      background: #1769aa;
+    }
+    @media (max-width: 700px) {
+      .guide-container {
+        padding: 12px 2vw;
+        margin: 8px;
+      }
+      h1 {
+        font-size: 1.15em;
+      }
+      .action-btn {
+        font-size: 1em;
+        padding: 10px 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="guide-container">
+    <h1>How to Create a Test</h1>
+    <div class="subtitle">Quick steps for quiz creation & Google Sheets integration</div>
+    <div class="story">
+      Ready to launch your quiz? This guide walks you through the essentials—uploading questions, setting rules, and connecting results to Google Sheets.
+    </div>
+
+    <h2>1. Steps to Create a Test</h2>
+    <ol>
+      <li class="step-title">Go to the <strong>Create Test</strong> page.</li>
+      <li class="step-title">Fill in these fields:
+        <ul>
+          <li><strong>Test Name</strong>: Give your quiz a name.</li>
+          <li><strong>Test Description</strong>: Add a brief description.</li>
+          <li>
+            <strong>Questions (PDF or JSON)</strong>: Upload your questions file.
+            <div class="pdf-template">
+              <strong>PDF Format Required:</strong>  
+              <pre><code>
+Q1: What is the capital of France?
+a) Berlin
+b) Madrid
+c) Paris
+d) Rome
+Answer: c
+
+Q2: Which planet is known as the Red Planet?
+a) Earth
+b) Mars
+c) Jupiter
+d) Venus
+Answer: b
+              </code></pre>
+              <ul>
+                <li>Start each question with <code>Q1:</code>, <code>Q2:</code>, etc.</li>
+                <li>Options: <code>a)</code>, <code>b)</code>, <code>c)</code>, <code>d)</code></li>
+                <li>Correct answer: <code>Answer: [option letter]</code></li>
+                <li>Leave a blank line between questions.</li>
+              </ul>
+              <strong>Other formats may not convert correctly.</strong>
+            </div>
+          </li>
+          <li><strong>Timer Type</strong>: Choose Overall or Per Question.</li>
+          <li><strong>Maximum Allowed Cheat Count</strong>: Set cheat attempt limit.</li>
+          <li><strong>Allow Keyboard During Test?</strong>: Yes or No.</li>
+          <li>
+            <strong>Google Sheet URL</strong>:
+            <span style="color: #d32f2f">Paste your Google Apps Script Web App URL (see below).</span>
+          </li>
+          <li><strong>Rules</strong>: Add any special instructions.</li>
+        </ul>
+      </li>
+      <li class="step-title">Click <strong>Create Test</strong> to save and activate.</li>
+    </ol>
+
+    <h2>2. Google Apps Script Web App URL</h2>
+    <ol>
+      <li class="step-title">
+        <strong>Create a Google Apps Script Project:</strong>
+        <ul>
+          <li>Go to <a href="https://script.google.com/home" target="_blank">Google Apps Script</a> and click <strong>New Project</strong>.</li>
+        </ul>
+      </li>
+      <li class="step-title">
+        <strong>Write the Script:</strong>
+        <pre><code>
+function doPost(e) {
+  var sheet = SpreadsheetApp.openById('YOUR_SHEET_ID').getSheets()[0];
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    data.name,
+    data.branch,
+    data.year,
+    data.email,
+    data.cheatCount,
+    data.score
+  ]);
+  return ContentService.createTextOutput("Success");
+}
+        </code></pre>
+        <ul>
+          <li>Replace <code>'YOUR_SHEET_ID'</code> with your Google Sheet's ID.</li>
+        </ul>
+      </li>
+      <li class="step-title">
+        <strong>Deploy as Web App:</strong>
+        <ul>
+          <li>Click <strong>Deploy &gt; New deployment</strong>.</li>
+          <li>Select <strong>Web app</strong> and set access to <strong>Anyone</strong>.</li>
+          <li>Click <strong>Deploy</strong> and copy the Web App URL.</li>
+        </ul>
+      </li>
+      <li class="step-title">
+        <strong>Use the Web App URL:</strong>
+        <pre><code>
+&lt;input
+  class="form-input"
+  type="url"
+  name="sheetUrl"
+  placeholder="Paste your Google Apps Script Web App URL"
+  required
+/&gt;
+        </code></pre>
+      </li>
+      <li class="step-title">
+        <strong>Test:</strong>
+        <ul>
+          <li>Submit a quiz and check your Google Sheet for results.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h2>How to Find Your Google Sheet ID</h2>
+    <div class="note">
+      You can get your <strong>Google Sheet ID</strong> directly from the sheet’s URL.<br><br>
+      For example, if your sheet URL is:<br>
+      <pre><code>https://docs.google.com/spreadsheets/d/1aBcDeFGhijkLMNOPqRstuVWxyZ1234567890abcdEFg/edit#gid=0</code></pre>
+      The part between <code>/d/</code> and <code>/edit</code> is your <strong>Sheet ID</strong>:<br>
+      <pre><code>1aBcDeFGhijkLMNOPqRstuVWxyZ1234567890abcdEFg</code></pre>
+      That’s the value you’ll replace <code>'YOUR_SHEET_ID'</code> with in your Apps Script code.<br><br>
+      <em>Tip: Just copy everything after <code>/d/</code> and before <code>/edit</code> in your sheet’s URL.</em>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong>  
+      Only use the Apps Script Web App URL, not the regular Google Sheet URL.  
+      Make sure your script and sheet permissions allow writing from your web app.
+    </div>
+
+    <h2>How to View Your Quiz Results</h2>
+    <div class="note">
+      <ol>
+        <li>Open your <strong>Google Sheet</strong> using the Sheet ID you set in your Apps Script code.<br>
+          <span style="font-size:0.97em;">
+            For example, go to:<br>
+            <code>https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit</code>
+          </span>
+        </li>
+        <li>Check the <strong>first sheet/tab</strong> (usually named "Sheet1" unless you renamed it).</li>
+        <li>Each quiz submission will appear as a new row, with columns for name, branch, year, email, cheat count, and score.</li>
+        <li>If you don't see new data, make sure your Apps Script is deployed and your quiz is submitting results to the correct Web App URL.</li>
+      </ol>
+      <em>Your results are updated in real time as participants submit their quizzes!</em>
+    </div>
+
+    <div style="text-align: center;">
+      <button
+        onclick="window.location.href='/create-test.html'"
+        class="action-btn"
+      >
+        Create Test
+      </button>
+    </div>
+  </div>
+</body>
+</html>

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       body {
-        background: #f7fbff;
+        background: linear-gradient(120deg, #eaf6ff 0%, #b6e0fe 100%);
         font-family: "Segoe UI", Arial, sans-serif;
         margin: 0;
         min-height: 100vh;
@@ -15,29 +15,38 @@
         justify-content: center;
       }
       .container {
-        max-width: 420px;
+        max-width: 480px;
         width: 100%;
         margin: 32px 0;
         background: #fff;
-        border-radius: 18px;
-        box-shadow: 0 4px 24px rgba(33,150,243,0.10);
-        padding: 32px 20px 24px 20px;
+        border-radius: 22px;
+        box-shadow: 0 8px 32px rgba(33, 150, 243, 0.1),
+          0 2px 8px rgba(0, 0, 0, 0.06);
+        padding: 40px 28px 28px 28px;
         display: flex;
         flex-direction: column;
         gap: 0;
       }
       .form-title {
-        font-weight: 700;
+        font-weight: 800;
         color: #1769aa;
-        margin-bottom: 18px;
+        margin-bottom: 22px;
         text-align: center;
-        font-size: 1.5em;
-        letter-spacing: 0.5px;
+        font-size: 2em;
+        letter-spacing: 1px;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .form-section {
+        margin-bottom: 18px;
       }
       .form-label {
         display: block;
         margin-bottom: 6px;
-        font-weight: 500;
+        font-weight: 600;
         color: #334155;
         font-size: 1em;
       }
@@ -45,12 +54,12 @@
       .form-textarea,
       .form-select {
         width: 100%;
-        padding: 10px 12px;
-        margin-bottom: 16px;
-        border: 1.2px solid #c3e0f7;
-        border-radius: 8px;
+        padding: 12px 14px;
+        margin-bottom: 8px;
+        border: 1.5px solid #c3e0f7;
+        border-radius: 10px;
         background: #f7fbff;
-        font-size: 15px;
+        font-size: 16px;
         transition: border 0.2s;
       }
       .form-input:focus,
@@ -66,12 +75,12 @@
         background: #2196f3;
         color: #fff;
         border: none;
-        border-radius: 8px;
-        padding: 12px 0;
-        font-size: 1em;
-        font-weight: 600;
+        border-radius: 10px;
+        padding: 14px 0;
+        font-size: 1.08em;
+        font-weight: 700;
         cursor: pointer;
-        margin-top: 8px;
+        margin-top: 10px;
         width: 100%;
         transition: background 0.2s;
       }
@@ -81,13 +90,13 @@
       .btn-home {
         background: #fff;
         color: #2196f3;
-        border: 1.2px solid #2196f3;
-        border-radius: 8px;
-        padding: 10px 0;
+        border: 1.5px solid #2196f3;
+        border-radius: 10px;
+        padding: 12px 0;
         font-size: 1em;
-        font-weight: 500;
+        font-weight: 600;
         width: 100%;
-        margin-top: 8px;
+        margin-top: 10px;
         cursor: pointer;
         transition: background 0.2s, color 0.2s;
       }
@@ -107,11 +116,20 @@
       }
       .timer-block {
         margin-bottom: 16px;
+        background: #f7fbff;
+        border-radius: 8px;
+        padding: 12px 10px;
       }
       .timer-radio-group {
         display: flex;
         gap: 18px;
         margin-bottom: 10px;
+      }
+      .form-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 12px;
       }
       @media (max-width: 600px) {
         .container {
@@ -119,48 +137,84 @@
           margin: 10px 0;
         }
         .form-title {
-          font-size: 1.1em;
+          font-size: 1.2em;
+        }
+        .form-input,
+        .form-textarea,
+        .form-select {
+          font-size: 1em;
+          padding: 10px 8px;
+        }
+        .form-button,
+        .btn-home {
+          font-size: 1em;
+          padding: 10px 0;
         }
       }
     </style>
   </head>
   <body>
     <div class="container">
-      <h1 class="form-title">Create Test</h1>
+      <div class="form-title">Create a New Test</div>
       <form>
-        <label class="form-label">
-          Test Name <span class="required">*</span>
-        </label>
-        <input
-          class="form-input"
-          type="text"
-          placeholder="Enter the test name"
-          name="test-name"
-          required
-        />
+        <div class="form-section">
+          <div style="text-align: center; margin-bottom: 18px">
+            <button
+              onclick="window.location.href='/documentation/createTest.html'"
+              style="
+                background: #1769aa;
+                color: #fff;
+                border: none;
+                border-radius: 10px;
+                padding: 12px 32px;
+                font-size: 1em;
+                font-weight: 700;
+                cursor: pointer;
+                transition: background 0.2s;
+                margin-top: 18px;
+              "
+            >
+              Learn How to Create a Test
+            </button>
+          </div>
+          <label class="form-label">
+            Test Name <span class="required">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="text"
+            placeholder="Enter the test name"
+            name="test-name"
+            required
+          />
+        </div>
 
-        <label class="form-label">
-          Test Description <span class="optional">(optional)</span>
-        </label>
-        <textarea
-          class="form-textarea"
-          rows="2"
-          placeholder="Brief description (optional)"
-          name="test-description"
-        ></textarea>
+        <div class="form-section">
+          <label class="form-label">
+            Test Description <span class="optional">(optional)</span>
+          </label>
+          <textarea
+            class="form-textarea"
+            rows="2"
+            placeholder="Brief description (optional)"
+            name="test-description"
+          ></textarea>
+        </div>
 
-        <label class="form-label">
-          Questions (PDF or JSON) <span class="required">*</span>
-        </label>
-        <input
-          class="form-input"
-          type="file"
-          accept=".pdf,application/pdf,.json,application/json"
-          required
-          name="json"
-        />
+        <div class="form-section">
+          <label class="form-label">
+            Questions (PDF or JSON) <span class="required">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="file"
+            accept=".pdf,application/pdf,.json,application/json"
+            required
+            name="json"
+          />
+        </div>
 
-        <div class="timer-block">
+        <div class="form-section timer-block">
           <label class="form-label">
             Timer Type <span class="required">*</span>
           </label>
@@ -213,58 +267,72 @@
           </div>
         </div>
 
-        <label class="form-label">
-          Maximum Allowed Cheat Count <span class="required">*</span>
-        </label>
-        <input
-          class="form-input"
-          type="number"
-          min="0"
-          placeholder="Max cheat count (e.g., 3)"
-          name="cheat-count"
-          required
-        />
+        <div class="form-section">
+          <label class="form-label">
+            Maximum Allowed Cheat Count <span class="required">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="number"
+            min="0"
+            placeholder="Max cheat count (e.g., 3)"
+            name="cheat-count"
+            required
+          />
+        </div>
 
-        <label class="form-label">
-          Allow Keyboard During Test? <span class="required">*</span>
-        </label>
-        <select class="form-select" required>
-          <option value="">Select</option>
-          <option value="yes">Yes</option>
-          <option value="no">No</option>
-        </select>
+        <div class="form-section">
+          <label class="form-label">
+            Allow Keyboard During Test? <span class="required">*</span>
+          </label>
+          <select class="form-select" required>
+            <option value="">Select</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </div>
 
-        <label class="form-label">
-          Google Sheet URL <span class="required">*</span>
-        </label>
-        <input
-          class="form-input"
-          type="url"
-          name="sheetUrl"
-          placeholder="Paste your Google Sheet URL"
-          required
-        />
+        <div class="form-section">
+          <label class="form-label">
+            Google Sheet URL(google s) <span class="required">*</span>
+          </label>
+          <input
+            class="form-input"
+            type="url"
+            name="sheetUrl"
+            placeholder="Paste your Google Sheet URL"
+            required
+          />
+        </div>
 
-        <label class="form-label">
-          Rules <span class="optional">(optional)</span>
-        </label>
-        <textarea
-          class="form-textarea"
-          rows="2"
-          placeholder="Any special rules (optional)"
-        ></textarea>
+        <div class="form-section">
+          <label class="form-label">
+            Rules <span class="optional">(optional)</span>
+          </label>
+          <textarea
+            class="form-textarea"
+            rows="2"
+            placeholder="Any special rules (optional)"
+          ></textarea>
+        </div>
 
-        <button class="form-button" type="submit">Create Test</button>
-        <button
-          class="form-button"
-          type="button"
-          onclick="window.location.href='dashboard/dashboard.html'"
-        >
-          Go to Dashboard
-        </button>
-        <button class="btn-home" type="button" onclick="window.location.href='/page.html'">
-          Go to Homepage
-        </button>
+        <div class="form-actions">
+          <button class="form-button" type="submit"   >Create Test</button>
+          <button
+            class="form-button"
+            type="button"
+            onclick="window.location.href='dashboard/dashboard.html'"
+          >
+            Go to Dashboard
+          </button>
+          <button
+            class="btn-home"
+            type="button"
+            onclick="window.location.href='/page.html'"
+          >
+            Go to Homepage
+          </button>
+        </div>
       </form>
     </div>
     <script type="module" src="script2.js"></script>

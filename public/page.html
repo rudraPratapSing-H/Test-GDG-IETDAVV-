@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             background: #eaf6ff;
@@ -22,6 +23,8 @@
             flex-direction: column;
             align-items: center;
             min-width: 320px;
+            max-width: 95vw;
+            width: 100%;
         }
         h1 {
             font-size: 2em;
@@ -42,21 +45,28 @@
             cursor: pointer;
             transition: background 0.2s;
             width: 220px;
+            max-width: 100%;
         }
         .main-btn:hover {
             background: #1769aa;
         }
         @media (max-width: 600px) {
+            body {
+                padding: 0;
+            }
             .main-container {
-                padding: 24px 8px;
+                padding: 18px 6vw;
                 min-width: unset;
+                max-width: 100vw;
             }
             h1 {
                 font-size: 1.3em;
+                margin-bottom: 20px;
             }
             .main-btn {
                 width: 100%;
                 font-size: 1em;
+                padding: 12px 0;
             }
         }
     </style>

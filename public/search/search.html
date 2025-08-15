@@ -3,11 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <title>Search Tests</title>
-    <link rel="stylesheet" href="style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-      
       body {
-        background: #eaf6ff;
+        background: linear-gradient(120deg, #eaf6ff 0%, #b6e0fe 100%);
         font-family: "Segoe UI", Arial, sans-serif;
         margin: 0;
         min-height: 100vh;
@@ -15,38 +14,39 @@
         align-items: center;
         justify-content: center;
       }
-      .btn-container{
-        display: flex;
-        gap: 10px;
-      }
       .search-container {
         background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-        padding: 40px 32px;
+        border-radius: 22px;
+        box-shadow: 0 8px 32px rgba(33,150,243,0.10), 0 2px 8px rgba(0,0,0,0.06);
+        padding: 44px 32px 32px 32px;
         display: flex;
         flex-direction: column;
-        
-        min-width: 500px;
-        
+        align-items: center;
+        min-width: 320px;
+        max-width: 95vw;
+        width: 100%;
       }
       .search-title {
-        font-size: 1.6em;
-        font-weight: 600;
-        color: #222;
+        font-size: 2em;
+        font-weight: 700;
+        color: #1769aa;
         margin-bottom: 28px;
         text-align: center;
+        letter-spacing: 1px;
       }
       .search-bar-group {
         display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
         max-width: 350px;
-        gap: 10px;
+        gap: 12px;
+        margin-bottom: 18px;
       }
       .search-input {
-        flex: 1;
+        width: 100%;
         padding: 12px;
-        border: 1px solid #e0e7ef;
+        border: 1.5px solid #c3e0f7;
         border-radius: 10px;
         background: #f7fbff;
         font-size: 16px;
@@ -56,13 +56,19 @@
         border-color: #2196f3;
         outline: none;
       }
+      .btn-container {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        justify-content: center;
+      }
       .search-btn {
         background: #2196f3;
         color: #fff;
         border: none;
         border-radius: 10px;
         padding: 12px 28px;
-        font-size: 18px;
+        font-size: 1em;
         font-weight: 600;
         cursor: pointer;
         transition: background 0.2s;
@@ -70,26 +76,68 @@
       .search-btn:hover {
         background: #1769aa;
       }
-            .btn-home {
-        display: inline-block;
-        padding: 10px 24px;
-        border: 2px solid #4285f4;
-        color: #4285f4;
-        border-radius: 8px;
+      .btn-home {
+        background: #fff;
+        color: #2196f3;
+        border: 1.5px solid #2196f3;
+        border-radius: 10px;
+        padding: 12px 28px;
+        font-size: 1em;
         font-weight: 500;
-        text-decoration: none;
-        transition: 0.3s ease;
+        cursor: pointer;
+        transition: background 0.2s, color 0.2s;
       }
-
       .btn-home:hover {
-        background: #4285f4;
-        color: white;
-        transform: translateY(-2px);
+        background: #2196f3;
+        color: #fff;
+      }
+      #exam-result {
+        width: 100%;
+        margin-top: 32px;
+        display: flex;
+        justify-content: center;
+      }
+      @media (max-width: 600px) {
+        body {
+          padding: 0;
+        }
+        .search-container {
+          padding: 18px 4vw;
+          min-width: unset;
+          max-width: 100vw;
+        }
+        .search-title {
+          font-size: 1.15em;
+          margin-bottom: 18px;
+        }
+        .search-bar-group {
+          max-width: 100vw;
+          gap: 10px;
+        }
+        .search-input {
+          font-size: 1em;
+          padding: 10px;
+          width: 100%;
+        }
+        .btn-container {
+          flex-direction: column;
+          gap: 8px;
+          width: 100%;
+        }
+        .search-btn,
+        .btn-home {
+          width: 100%;
+          font-size: 1em;
+          padding: 10px 0;
+        }
+        #exam-result > div {
+          max-width: 98vw !important;
+          padding: 16px 6vw !important;
+        }
       }
     </style>
   </head>
   <body>
-    <!-- Add this inside your <body> in search.html, replacing the empty .search-container -->
     <div class="search-container">
       <div class="search-title">Search Tests</div>
       <form class="search-bar-group" id="search-form">
@@ -99,12 +147,12 @@
           placeholder="Enter test name or keyword..."
           required
         />
-        <div class="btn-container"><button class="search-btn" type="submit">Go</button>
-        <button class="btn-home" onclick="window.location.href='/page.html'">Go to Homepage</button>
-</div>
-        
+        <div class="btn-container">
+          <button class="search-btn" type="submit">Go</button>
+          <button class="btn-home" type="button" onclick="window.location.href='/page.html'">Go to Homepage</button>
+        </div>
       </form>
-      <div id="exam-result" style="width: 100%; margin-top: 32px"></div>
+      <div id="exam-result"></div>
     </div>
 
     <script>
@@ -158,7 +206,6 @@
             <div style="font-size:0.98em;color:#334155;">Keyboard Allowed: ${
               data.AllowingKeyboard ? "Yes" : "No"
             }</div>
-          
             <button class="search-btn" style="margin-top:18px;" onclick="window.location.href='/index.html?id=${
               data._id
             }'">Attempt</button>
