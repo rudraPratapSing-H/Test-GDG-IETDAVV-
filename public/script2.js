@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           window.location.href = "/dashboard.html";
         })
 
-        .catch((err) => console.log("Upload error:", err));
+        .catch((err) => alert("error uploading! Try again.`"));
     }
     // uploadTest();
 
