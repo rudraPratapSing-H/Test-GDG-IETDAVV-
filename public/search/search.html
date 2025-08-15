@@ -138,6 +138,9 @@
     </style>
   </head>
   <body>
+    <div style="text-align:center; margin-bottom:18px;">
+
+    </div>
     <div class="search-container">
       <div class="search-title">Search Tests</div>
       <form class="search-bar-group" id="search-form">
@@ -149,7 +152,25 @@
         />
         <div class="btn-container">
           <button class="search-btn" type="submit">Go</button>
+          
           <button class="btn-home" type="button" onclick="window.location.href='/page.html'">Go to Homepage</button>
+                <button
+        onclick="window.location.href='/documentation/attempt.html'"
+        style="
+          background: #1769aa;
+          color: #fff;
+          border: none;
+          border-radius: 10px;
+          padding: 12px 32px;
+          font-size: 1em;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.2s;
+          margin-top: 18px;
+        "
+      >
+        How to Attempt
+      </button>
         </div>
       </form>
       <div id="exam-result"></div>

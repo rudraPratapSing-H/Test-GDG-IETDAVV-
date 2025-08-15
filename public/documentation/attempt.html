@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>How to Attempt a Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      background: #f7fbff;
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 480px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px rgba(33,150,243,0.07);
+      padding: 32px 18px 24px 18px;
+      margin: 24px 0;
+      text-align: center;
+    }
+    h1 {
+      color: #1769aa;
+      font-size: 1.7em;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: 0.5px;
+    }
+    .steps {
+      text-align: left;
+      margin: 0 auto 18px auto;
+      font-size: 1em;
+      color: #222;
+    }
+    .steps li {
+      margin-bottom: 10px;
+    }
+    .note {
+      background: #eaf6ff;
+      border-left: 3px solid #2196f3;
+      padding: 8px 12px;
+      border-radius: 7px;
+      margin-bottom: 18px;
+      color: #1769aa;
+      font-size: 0.98em;
+    }
+    .attempt-btn {
+      background: #2196f3;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 32px;
+      font-size: 1em;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 18px;
+      box-shadow: 0 2px 8px rgba(33,150,243,0.07);
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+    .attempt-btn:hover {
+      background: #1769aa;
+    }
+    @media (max-width: 700px) {
+      .container {
+        padding: 12px 2vw;
+        margin: 8px;
+      }
+      h1 {
+        font-size: 1.15em;
+      }
+      .attempt-btn {
+        font-size: 1em;
+        padding: 10px 0;
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>How to Attempt a Test</h1>
+    <div class="note">
+      Follow these simple steps to securely attempt your online quiz!
+    </div>
+    <ol class="steps">
+      <li>Click the <strong>Attempt</strong> button below to go to the test search page.</li>
+      <li>Enter the test name or keyword to find your quiz.</li>
+      <li>Select your test from the results and click <strong>Attempt</strong>.</li>
+      <li>Fill in your details (such as name and email) if prompted.</li>
+      <li>The test will start in fullscreen mode with anti-cheat enabled.</li>
+      <li>Answer each question within the allotted time.</li>
+      <li>Submit your answers when finished. Your results will be logged automatically.</li>
+    </ol>
+    <button class="attempt-btn" onclick="window.location.href='/search/search.html'">
+      Attempt
+    </button>
+  </div>
+</body>
+</html>
