@@ -90,6 +90,10 @@ if (!submit) {
         form.style.display = "none";
         quizSection.style.display = "block";
         cheatDisplay = document.getElementById("cheat-count");
+        
+        // Display timer information
+        displayTimerInfo();
+        
         showQuestion();
         // to show question
 
@@ -116,6 +120,12 @@ function showQuestion() {
 
   let type = questions[index].correct.length === 1 ? "radio" : "checkbox";
   let category = questions[index].correct.length === 1 ? "MCQ" : "MSQ";
+
+  // Update question counter
+  const currentQuestionSpan = document.getElementById("current-question");
+  if (currentQuestionSpan) {
+    currentQuestionSpan.textContent = index + 1;
+  }
 
   questionSpace.innerHTML = `
     <p>Q${index + 1}: ${questions[index].question} (${category}) </p>
@@ -164,6 +174,40 @@ function showQuestion() {
     submitBtn.classList.add("hide");
   }
 }
+
+function displayTimerInfo() {
+  const totalDurationInfo = document.getElementById("total-duration-info");
+  const totalDurationDisplay = document.getElementById("total-duration-display");
+  const perQuestionInfo = document.getElementById("per-question-info");
+  const perQuestionDisplay = document.getElementById("per-question-display");
+  const totalQuestionsSpan = document.getElementById("total-questions");
+  const timerLabel = document.getElementById("timer-label");
+
+  // Show total questions count
+  if (questions && questions.length) {
+    totalQuestionsSpan.textContent = questions.length;
+  }
+
+  // Show total duration if available
+  if (testDuration && !isNaN(testDuration)) {
+    totalDurationInfo.style.display = "block";
+    totalDurationDisplay.textContent = testDuration;
+  }
+
+  // Show per-question duration if available
+  if (perQuestionDuration && !isNaN(perQuestionDuration)) {
+    perQuestionInfo.style.display = "block";
+    perQuestionDisplay.textContent = perQuestionDuration;
+  }
+
+  // Update the timer label based on timer type
+  if (perQuestionDuration && !isNaN(perQuestionDuration)) {
+    timerLabel.textContent = "⏱️ Question Time Left:";
+  } else {
+    timerLabel.textContent = "⏰ Total Time Left:";
+  }
+}
+
 function forceFullscreen() {
   requestFullscreen()
     .then(() => {
