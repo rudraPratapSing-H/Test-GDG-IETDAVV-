@@ -6,7 +6,7 @@ let timeLeft = 0;
 let exam;
 let questions;
 let testDuration;
-let keybordPermission;
+let keyboardPermission;
 let cheatCount = 0;
 let totalCheatCount = 3; // default value, can be overridden by exam data
 let timer;
@@ -22,6 +22,7 @@ let keylock = false;
 let keyBlock = false;
 // question showing credentials
 let globalScore = 0;
+let userAnswersArray = []; // Store all user answers
 let questionSpace = document.querySelector(".question");
 let index = 0;
 
@@ -70,10 +71,9 @@ if (!submit) {
         questions = data.json;
       }
       testDuration = data.overallDuration;
-      keybordPermission = data.AllowingKeyboard;
+      keyboardPermission = data.AllowingKeyboard;
       totalCheatCount = data.cheatCount;
       // rules = data.Rules;
-      sheetUrl = data.sheetUrl;
       perQuestionDuration = data.perQuestionDuration;
       
       
@@ -148,7 +148,7 @@ function showQuestion() {
   const nextBtn = document.getElementById("nextBtn");
   const submitBtn = document.getElementById("submitBtn");
 
-  if (index === 0 || perQuestionDuration) {
+  if (index === 0) {
     prevBtn.style.display = "none";
   } else {
     prevBtn.style.display = "inline-block";
@@ -170,19 +170,22 @@ function forceFullscreen() {
       document.getElementById("fs-exit-overlay").style.display = "none";
 
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / ${totalCheatCount}`;
+      
+      // Use correct question type
+      let type = questions[index].correct.length === 1 ? "radio" : "checkbox";
           
       questionSpace.innerHTML = `
   <p>Q${index + 1}: ${questions[index].question}</p>
-  <label><input type="checkbox" name="q${index}" value="a" /> ${
+  <label><input type="${type}" name="q${index}" value="a" /> ${
         questions[index].a
       }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="b" /> ${
+  <label><input type="${type}" name="q${index}" value="b" /> ${
         questions[index].b
       }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="c" /> ${
+  <label><input type="${type}" name="q${index}" value="c" /> ${
         questions[index].c
       }</label><br/>
-  <label><input type="checkbox" name="q${index}" value="d" /> ${
+  <label><input type="${type}" name="q${index}" value="d" /> ${
         questions[index].d
       }</label>
 `;
@@ -276,7 +279,7 @@ function warnSound() {
 window.addEventListener(
   "keydown",
   function (e) {
-    if (!keybordPermission && !keylock) return;
+    if (keyboardPermission || !keylock) return;
 
     const blockedKeys = [
       "F1",
@@ -340,7 +343,7 @@ window.addEventListener(
     cheatCount++;
     if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
     if (cheatDisplay)
-      cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+      cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / ${totalCheatCount}`;
 
     showCheatWarning();
     reportCheating("Pressed undesired keys!");
@@ -363,7 +366,7 @@ function setupAntiCheat() {
       cheatCount++;
       if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
       if (cheatDisplay)
-        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+        cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / ${totalCheatCount}`;
 
       showCheatWarning();
       reportCheating("Exited fullscreen");
@@ -432,22 +435,21 @@ function submitForm(auto = false) {
   const submitBtn = document.getElementById("submitBtn");
   if (submitBtn) submitBtn.disabled = true;
 
-  const selectedOptions = document.querySelectorAll(
-    `input[name="q${index}"]:checked`
-  );
-  const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
+  // Process the current question if not already processed
+  if (!auto) {
+    const selectedOptions = document.querySelectorAll(
+      `input[name="q${index}"]:checked`
+    );
+    const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
+    const correctAnswers = questions[index].correct;
 
-  const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
+    const isCorrect =
+      userAnswers.length === correctAnswers.length &&
+      userAnswers.every((val) => correctAnswers.includes(val));
 
-  // Compare both arrays (ignoring order)
-  const isCorrect =
-    userAnswers.length === correctAnswers.length &&
-    userAnswers.every((val) => correctAnswers.includes(val));
-
-  if (isCorrect) {
-    console.log("Correct answer!");
-
-    globalScore++;
+    if (isCorrect) {
+      globalScore++;
+    }
   }
 
   window.location.href = "/thankyou.html";
@@ -459,9 +461,6 @@ function submitForm(auto = false) {
       branch: document.getElementById("branch").value,
       year: document.getElementById("year").value,
       email: document.getElementById("email").value,
-      sheetUrl,
-      
-
       cheatCount: cheatCount,
       score: globalScore,
     }),
@@ -481,12 +480,15 @@ function submitForm(auto = false) {
 
 window.nextQuestion = () => {
   console.log("Next question clicked", typeof questions);
+  
+  // Store current question's answer
   const selectedOptions = document.querySelectorAll(
     `input[name="q${index}"]:checked`
   );
   const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
+  userAnswersArray[index] = userAnswers;
 
-  const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
+  const correctAnswers = questions[index].correct;
 
   // Compare both arrays (ignoring order)
   const isCorrect =
@@ -495,7 +497,6 @@ window.nextQuestion = () => {
 
   if (isCorrect) {
     console.log("Correct answer!");
-
     globalScore++;
   }
   timeFlag++;

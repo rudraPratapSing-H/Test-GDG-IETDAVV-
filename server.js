@@ -4,7 +4,8 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const uploadTestRoutes = require('./routes/uploadTest');
 const examRoutes = require('./routes/exam');
-const Exam = require('./models/Test')
+const Exam = require('./models/Test');
+const StudentResponse = require('./models/StudentResponse'); // Import the StudentResponse model
 
 const path = require("path");
 const axios = require("axios");
@@ -12,7 +13,7 @@ const cors = require("cors");
 
 const app = express();
 
-// Middlewaremongoose.connect(process.env.MONGO_URI)
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors()); // Enable CORS (be cautious in production)
@@ -27,45 +28,63 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 // const GOOGLE_SCRIPT_URL =
 //   "https://script.google.com/macros/s/AKfycby6QIzkGDEH324qRh2UJTM8y6q1ZS6gMOVDzTo0FJOebhFdCDyukjwK0xi0kBmaBieD/exec";
 
-mongoose.connect(process.env.MONGO_URI).then(() => {
-  console.log("Connected to MongoDB");    }).catch((err) => {
-  console.error("MongoDB connection error:", err);      }
-);
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("Connected to MongoDB");
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
 
 // Submit Answers
 app.post("/submit", async (req, res) => {
   try {
-    const { name, branch, year, email, cheatCount, score, sheetUrl } =
-      req.body;
+    const { name, branch, year, email, cheatCount, score } = req.body;
 
-    // Validate required fields (optional but good practice)
+    // Validate required fields
     if (!name || !branch || !year || !email) {
-      return res.status(400).send("Missing required fields.");
-    }
-    if(!sheetUrl) {
-      return res.status(400).send("Missing or incorrect Google Sheet URL.");
+      return res.status(400).json({ error: "Missing required fields." });
     }
 
-    const url = sheetUrl;
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ error: "Invalid email format." });
+    }
 
-    // Post to Google Apps Script
-    const response = await axios.post(url, {
+    // Validate score (should be a number and within reasonable range)
+    if (score !== undefined && (typeof score !== 'number' || score < 0 || score > 100)) {
+      return res.status(400).json({ error: "Score must be a number between 0 and 100." });
+    }
+
+    // Validate cheatCount (should be a non-negative number)
+    if (cheatCount !== undefined && (typeof cheatCount !== 'number' || cheatCount < 0)) {
+      return res.status(400).json({ error: "Cheat count must be a non-negative number." });
+    }
+
+    // Store data in the StudentResponse collection
+    const studentResponse = new StudentResponse({
       name,
       branch,
       year,
       email,
-    
-      cheatCount,
-      score,
-  
+      cheatCount: cheatCount || 0,
+      score: score || 0,
     });
 
-    console.log("Submitted to Google Sheet:", response.status);
-    res.status(200).send("Submitted successfully");
+    await studentResponse.save(); // Save the response to the database
+
+    res.status(200).json({ message: "Data submitted successfully." });
   } catch (err) {
     console.error("Submit error:", err.message);
-    res.status(500).send("Submission failed");
+    
+    // Handle duplicate key error (if email is unique)
+    if (err.code === 11000) {
+      return res.status(409).json({ error: "Student response already exists for this email." });
+    }
+    
+    res.status(500).json({ error: "Submission failed." });
   }
 });
 
@@ -78,6 +97,12 @@ app.use(express.static(path.join(__dirname, "public"))); // Serve frontend
 // Report Cheating
 app.post("/cheat", async (req, res) => {
   try {
+    const { studentEmail, examId, eventType, description } = req.body;
+    
+    // Log cheating event (you could save to CheatEvent schema here)
+    console.log("Cheating reported:", { studentEmail, examId, eventType, description });
+    
+    // TODO: Implement actual cheating logic here
     res.status(200).send("Cheating reported");
   } catch (err) {
     console.error("Cheating error:", err.message);
