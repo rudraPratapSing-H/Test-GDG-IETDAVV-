@@ -12,7 +12,7 @@ let totalCheatCount = 3; // default value, can be overridden by exam data
 let timer;
 // let timeLeft = exam.overallDuration
 let isLocked = false;
-let cheatDispl
+let cheatDisplay; // Fixed typo
 // let keybordPermission = exam.allowingKeyboard || false;
 let timeFlag = 0;
 let perQuestionDuration;
@@ -392,7 +392,8 @@ function perQuestionTimer() {
   const label = document.getElementById("timer-text");
   if (!label) return;
   clearInterval(timer);
-  timeLeft = perQuestionDuration * 60 + extraSecond;
+  // perQuestionDuration is in seconds, not minutes
+  timeLeft = perQuestionDuration + extraSecond;
   timer = setInterval(() => {
     timeLeft--;
     const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
@@ -400,13 +401,32 @@ function perQuestionTimer() {
     label.textContent = `${minutes}:${seconds}`;
 
     if (timeLeft <= 0) {
-      clearInterval(timer); // crutial for timer to work propely
+      clearInterval(timer); // crucial for timer to work properly
 
       if (index === questions.length - 1) {
         autoSubmit("Time's up on last question");
       } else {
+        // Store current answer before moving to next question
+        const selectedOptions = document.querySelectorAll(
+          `input[name="q${index}"]:checked`
+        );
+        const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
+        userAnswersArray[index] = userAnswers;
+
+        // Check if answer is correct
+        const correctAnswers = questions[index].correct;
+        const isCorrect =
+          userAnswers.length === correctAnswers.length &&
+          userAnswers.every((val) => correctAnswers.includes(val));
+
+        if (isCorrect) {
+          globalScore++;
+        }
+
         extraSecond++;
-        nextQuestion();
+        index++;
+        showQuestion();
+        perQuestionTimer(); // Restart timer for next question
       }
     }
   }, 1000);
@@ -524,8 +544,25 @@ window.nextQuestion = () => {
 // Add this function after window.nextQuestion
 window.prevQuestion = () => {
   if (index <= 0) return;
+  
+  // Store current answer before going back
+  const selectedOptions = document.querySelectorAll(
+    `input[name="q${index}"]:checked`
+  );
+  const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
+  userAnswersArray[index] = userAnswers;
+  
   index--;
   showQuestion();
+  
+  // Restore previous answers if they exist
+  if (userAnswersArray[index] && userAnswersArray[index].length > 0) {
+    userAnswersArray[index].forEach(answer => {
+      const input = document.querySelector(`input[name="q${index}"][value="${answer}"]`);
+      if (input) input.checked = true;
+    });
+  }
+  
   // Restart per-question timer if in per-question mode
   if (perQuestionDuration && !isNaN(perQuestionDuration)) {
     clearInterval(timer);
