@@ -112,13 +112,17 @@ if (!submit) {
     // Force fullscreen when quiz starts
     forceFullscreen();
     
-    if (testDuration && !isNaN(testDuration)) {
-      overallTimer();
-    } else if (
-      perQuestionDuration &&
-      !isNaN(perQuestionDuration)
-    ) {
+    // Always use per-question timing approach
+    if (perQuestionDuration && !isNaN(perQuestionDuration)) {
       perQuestionTimer();
+    } else if (testDuration && !isNaN(testDuration) && questions && questions.length > 0) {
+      // Convert total duration to per-question duration
+      const totalSeconds = testDuration * 60;
+      perQuestionDuration = Math.floor(totalSeconds / questions.length);
+      perQuestionTimer();
+    } else {
+      // No timing information available
+      console.warn('No timing information available for the quiz');
     }
   });
 }
@@ -210,14 +214,69 @@ function initializeTimerDisplay() {
 
 // Fullscreen functionality
 function forceFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen().then(() => {
+  const element = document.documentElement;
+  
+  // Check if already in fullscreen
+  if (document.fullscreenElement || document.webkitFullscreenElement || 
+      document.mozFullScreenElement || document.msFullscreenElement) {
+    isFullscreenEnabled = true;
+    hideFullscreenOverlay();
+    return;
+  }
+  
+  // Try different fullscreen methods for browser compatibility
+  if (element.requestFullscreen) {
+    element.requestFullscreen().then(() => {
       isFullscreenEnabled = true;
       hideFullscreenOverlay();
     }).catch((err) => {
-      console.error('Error attempting to enable fullscreen:', err);
-      alert('Please enable fullscreen to continue with the quiz.');
+      console.error('Error with requestFullscreen:', err);
+      tryAlternativeFullscreen();
     });
+  } else if (element.webkitRequestFullscreen) { // Safari
+    element.webkitRequestFullscreen();
+    isFullscreenEnabled = true;
+    hideFullscreenOverlay();
+  } else if (element.mozRequestFullScreen) { // Firefox
+    element.mozRequestFullScreen();
+    isFullscreenEnabled = true;
+    hideFullscreenOverlay();
+  } else if (element.msRequestFullscreen) { // IE/Edge
+    element.msRequestFullscreen();
+    isFullscreenEnabled = true;
+    hideFullscreenOverlay();
+  } else {
+    // Fallback if fullscreen is not supported
+    tryAlternativeFullscreen();
+  }
+}
+
+function tryAlternativeFullscreen() {
+  // If standard fullscreen fails, try to maximize window and hide browser UI
+  console.warn('Standard fullscreen not available, using alternative method');
+  
+  // Hide browser UI elements and maximize
+  try {
+    // Move window to top-left and resize to full screen
+    window.moveTo(0, 0);
+    window.resizeTo(screen.width, screen.height);
+    
+    // Hide scrollbars and other UI elements
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+    
+    isFullscreenEnabled = true;
+    hideFullscreenOverlay();
+    
+    // Show a warning that true fullscreen couldn't be activated
+    setTimeout(() => {
+      alert('Please press F11 or use browser fullscreen for better quiz experience.');
+    }, 1000);
+    
+  } catch (err) {
+    console.error('Alternative fullscreen method failed:', err);
+    alert('Fullscreen is required for this quiz. Please manually enter fullscreen mode (F11) to continue.');
+    showFullscreenOverlay();
   }
 }
 
@@ -274,23 +333,29 @@ function displayTimerInfo() {
     totalQuestionsSpan.textContent = questions.length;
   }
 
-  // Show total duration if available
-  if (testDuration && !isNaN(testDuration)) {
-    totalDurationInfo.style.display = "block";
-    totalDurationDisplay.textContent = testDuration;
+  // Hide total duration info - we only want per-question timer
+  if (totalDurationInfo) {
+    totalDurationInfo.style.display = "none";
   }
 
   // Show per-question duration if available
   if (perQuestionDuration && !isNaN(perQuestionDuration)) {
     perQuestionInfo.style.display = "block";
     perQuestionDisplay.textContent = perQuestionDuration;
-  }
-
-  // Update the timer label based on timer type
-  if (perQuestionDuration && !isNaN(perQuestionDuration)) {
+    timerLabel.textContent = "⏱️ Question Time Left:";
+  } else if (testDuration && !isNaN(testDuration)) {
+    // If no per-question duration, show total as per-question format
+    perQuestionInfo.style.display = "block";
+    const totalSeconds = testDuration * 60;
+    const perQuestionSeconds = Math.floor(totalSeconds / questions.length);
+    perQuestionDisplay.textContent = perQuestionSeconds;
     timerLabel.textContent = "⏱️ Question Time Left:";
   } else {
-    timerLabel.textContent = "⏰ Total Time Left:";
+    // Hide per-question info if no timing data
+    if (perQuestionInfo) {
+      perQuestionInfo.style.display = "none";
+    }
+    timerLabel.textContent = "⏱️ Question Time Left:";
   }
 }
 
