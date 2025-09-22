@@ -26,7 +26,6 @@ const upload = multer({ storage });
 router.post("/", upload.single("json"), async (req, res) => {
   try {
     const username = req.headers.username;
-    const sheetUrl = req.headers.sheeturl;
 
     const {
       name,
@@ -37,6 +36,15 @@ router.post("/", upload.single("json"), async (req, res) => {
       Rules,
       AllowingKeyboard,
     } = req.body;
+
+    // Validation
+    if (!name || name.trim() === "") {
+      return res.status(400).json({ error: "Test name is required." });
+    }
+
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded." });
+    }
 
     let jsonString = "";
 
@@ -119,15 +127,25 @@ router.post("/", upload.single("json"), async (req, res) => {
       perQuestionDuration: perQuestionDuration ? parseInt(perQuestionDuration) : null,
       Rules,
       AllowingKeyboard: AllowingKeyboard === "true" || AllowingKeyboard === "yes",
-      sheetUrl,
     });
 
     await testData.save();
 
     res.status(200).json({ message: "Test created successfully", data: testData });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    console.error("Upload Test Error:", err);
+    
+    // More detailed error responses
+    if (err.name === 'ValidationError') {
+      const errors = Object.values(err.errors).map(e => e.message);
+      return res.status(400).json({ error: `Validation Error: ${errors.join(', ')}` });
+    }
+    
+    if (err.code === 11000) {
+      return res.status(409).json({ error: "A test with this name already exists for this user." });
+    }
+    
+    res.status(500).json({ error: `Server Error: ${err.message}` });
   }
 });
 

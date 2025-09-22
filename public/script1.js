@@ -12,7 +12,7 @@ let totalCheatCount = 3; // default value, can be overridden by exam data
 let timer;
 // let timeLeft = exam.overallDuration
 let isLocked = false;
-let cheatDisplay;
+let cheatDispl
 // let keybordPermission = exam.allowingKeyboard || false;
 let timeFlag = 0;
 let perQuestionDuration;

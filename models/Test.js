@@ -47,7 +47,7 @@ const examSchema = new mongoose.Schema({
   },
   sheetUrl: {
     type: String,
-    required: true, // URL of the Google Sheet
+    required: false, // URL of the Google Sheet (now optional)
   },
 });
 
