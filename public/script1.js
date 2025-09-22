@@ -1,3 +1,4 @@
+import { Keyboard } from 'react-native';
 const BASE_URL = window.location.origin;
 const submitURL = `${BASE_URL}/submit`;
 const cheatURL = `${BASE_URL}/cheat`;
@@ -23,6 +24,7 @@ let userAnswers = []; // Store all user answers
 let questionSpace = document.querySelector(".question");
 let timerDisplay; // Will be initialized when quiz starts
 let index = 0;
+let isFullscreenEnabled = false; // Track fullscreen state
 
 const form = document.getElementById("user-form");
 const quizSection = document.getElementById("quiz-section");
@@ -88,6 +90,11 @@ if (!submit) {
     quizSection.style.display = "block";
     cheatDisplay = document.getElementById("cheat-count");
     
+    // Update cheat display with correct total count
+    if (cheatDisplay) {
+      cheatDisplay.textContent = `Cheating Attempts: 0/${totalCheatCount}`;
+    }
+    
     // Connect timer display element after quiz section is shown
     timerDisplay = document.getElementById("timer-text");
     
@@ -101,6 +108,10 @@ if (!submit) {
     // to show question
 
     setupAntiCheat();
+    
+    // Force fullscreen when quiz starts
+    forceFullscreen();
+    
     if (testDuration && !isNaN(testDuration)) {
       overallTimer();
     } else if (
@@ -194,6 +205,59 @@ function initializeTimerDisplay() {
       // Fallback: show 00:00 if no duration is set
       timerDisplay.textContent = "00:00";
     }
+  }
+}
+
+// Fullscreen functionality
+function forceFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen().then(() => {
+      isFullscreenEnabled = true;
+      hideFullscreenOverlay();
+    }).catch((err) => {
+      console.error('Error attempting to enable fullscreen:', err);
+      alert('Please enable fullscreen to continue with the quiz.');
+    });
+  }
+}
+
+function hideFullscreenOverlay() {
+  const overlay = document.getElementById('fs-exit-overlay');
+  if (overlay) {
+    overlay.style.display = 'none';
+  }
+}
+
+function showFullscreenOverlay() {
+  const overlay = document.getElementById('fs-exit-overlay');
+  if (overlay) {
+    overlay.style.display = 'flex';
+  }
+}
+
+function setupFullscreenMonitoring() {
+  document.addEventListener('fullscreenchange', () => {
+    if (isFullscreenEnabled && !document.fullscreenElement) {
+      // User exited fullscreen - mark as cheating
+      cheatCount++;
+      if (cheatDisplay) {
+        cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / ${totalCheatCount}`;
+      }
+      showCheatWarning();
+      reportCheating("Exited fullscreen mode");
+      showFullscreenOverlay();
+      
+      if (cheatCount >= totalCheatCount) {
+        alert("Cheating limit reached. Auto-submitting your quiz.");
+        autoSubmit("Exited fullscreen too many times");
+      }
+    }
+  });
+  
+  // Add click handler to re-enter fullscreen button
+  const reenterBtn = document.getElementById('re-enter');
+  if (reenterBtn) {
+    reenterBtn.addEventListener('click', forceFullscreen);
   }
 }
 
@@ -422,16 +486,19 @@ function showCheatWarning() {
 }
 
 function setupAntiCheat() {
+  // Setup fullscreen monitoring
+  setupFullscreenMonitoring();
+  
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") {
       cheatCount++;
       if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
       if (cheatDisplay)
-        cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / 3`;
+        cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / ${totalCheatCount}`;
       showCheatWarning();
       reportCheating("Tab switched");
 
-      if (cheatCount >= 3) {
+      if (cheatCount >= totalCheatCount) {
         alert("Cheating limit reached. Auto-submitting your quiz.");
         autoSubmit("Cheated 3 times");
       }
@@ -451,11 +518,11 @@ function setupAntiCheat() {
           (e.ctrlKey && e.key === 'u')) {
         e.preventDefault();
         cheatCount++;
-        if (cheatDisplay) cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / 3`;
+        if (cheatDisplay) cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / ${totalCheatCount}`;
         showCheatWarning();
         reportCheating("Attempted to open developer tools");
         
-        if (cheatCount >= 3) {
+        if (cheatCount >= totalCheatCount) {
           alert("Cheating limit reached. Auto-submitting your quiz.");
           autoSubmit("Attempted to open developer tools 3 times");
         }
@@ -480,7 +547,16 @@ window.prevQuestion = () => {
 // Submit button event handler
 window.submitQuiz = () => {
   if (confirm("Are you sure you want to submit your quiz? This action cannot be undone.")) {
-    handleQuizSubmission();
+    // Force fullscreen before submission
+    if (!document.fullscreenElement) {
+      forceFullscreen();
+      // Wait a moment for fullscreen to activate, then submit
+      setTimeout(() => {
+        handleQuizSubmission();
+      }, 500);
+    } else {
+      handleQuizSubmission();
+    }
   }
 };
 
