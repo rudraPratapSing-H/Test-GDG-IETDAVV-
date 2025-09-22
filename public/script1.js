@@ -19,7 +19,7 @@ let keylock = false;
 let keyBlock = false;
 // question showing credentials
 let globalScore = 0;
-let userAnswersArray = []; // Store all user answers
+let userAnswers = []; // Store all user answers
 let questionSpace = document.querySelector(".question");
 let timerDisplay; // Will be initialized when quiz starts
 let index = 0;
@@ -104,8 +104,8 @@ if (!submit) {
     if (testDuration && !isNaN(testDuration)) {
       overallTimer();
     } else if (
-      data.perQuestionDuration &&
-      !isNaN(data.perQuestionDuration)
+      perQuestionDuration &&
+      !isNaN(perQuestionDuration)
     ) {
       perQuestionTimer();
     }
@@ -245,7 +245,7 @@ function overallTimer() {
     
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      submitQuiz();
+      handleQuizSubmission();
     }
   }, 1000);
 }
@@ -262,7 +262,7 @@ function perQuestionTimer() {
     
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      nextQuestion();
+      moveToNextQuestion();
     }
   }, 1000);
 }
@@ -299,7 +299,7 @@ function updateTimerDisplay(seconds) {
   }
 }
 
-function nextQuestion() {
+function moveToNextQuestion() {
   getUserAnswer();
   
   if (index < questions.length - 1) {
@@ -309,11 +309,11 @@ function nextQuestion() {
       perQuestionTimer();
     }
   } else {
-    submitQuiz();
+    handleQuizSubmission();
   }
 }
 
-function prevQuestion() {
+function moveToPrevQuestion() {
   if (index > 0) {
     getUserAnswer();
     index--;
@@ -339,7 +339,7 @@ function getUserAnswer() {
   userAnswers[index] = selectedAnswers;
 }
 
-function submitQuiz() {
+function handleQuizSubmission() {
   getUserAnswer(); // Get the current question's answer
   
   // Calculate score
@@ -407,7 +407,7 @@ function autoSubmit(reason) {
   clearInterval(timerInterval);
   reportCheating(reason);
   isLocked = true;
-  submitQuiz();
+  handleQuizSubmission();
 }
 
 function showCheatWarning() {
@@ -467,20 +467,20 @@ function setupAntiCheat() {
 // Navigation button event handlers
 window.nextQuestion = () => {
   if (!isLocked && index < questions.length - 1) {
-    nextQuestion();
+    moveToNextQuestion();
   }
 };
 
 window.prevQuestion = () => {
   if (!isLocked && index > 0) {
-    prevQuestion();
+    moveToPrevQuestion();
   }
 };
 
 // Submit button event handler
 window.submitQuiz = () => {
   if (confirm("Are you sure you want to submit your quiz? This action cannot be undone.")) {
-    submitQuiz();
+    handleQuizSubmission();
   }
 };
 
