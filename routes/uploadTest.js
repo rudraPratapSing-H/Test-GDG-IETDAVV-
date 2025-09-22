@@ -35,6 +35,7 @@ router.post("/", upload.single("json"), async (req, res) => {
       perQuestionDuration,
       Rules,
       AllowingKeyboard,
+      cheatCount,
     } = req.body;
 
     // Validation
@@ -44,6 +45,12 @@ router.post("/", upload.single("json"), async (req, res) => {
 
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded." });
+    }
+
+    // Validate cheat count
+    const parsedCheatCount = parseInt(cheatCount);
+    if (cheatCount && (isNaN(parsedCheatCount) || parsedCheatCount < 0)) {
+      return res.status(400).json({ error: "Cheat count must be a non-negative number." });
     }
 
     let jsonString = "";
@@ -127,6 +134,7 @@ router.post("/", upload.single("json"), async (req, res) => {
       perQuestionDuration: perQuestionDuration ? parseInt(perQuestionDuration) : null,
       Rules,
       AllowingKeyboard: AllowingKeyboard === "true" || AllowingKeyboard === "yes",
+      cheatCount: cheatCount ? parseInt(cheatCount) : 0,
     });
 
     await testData.save();
