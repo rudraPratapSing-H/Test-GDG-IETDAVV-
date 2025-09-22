@@ -10,7 +10,7 @@ const studentResponseSchema = new mongoose.Schema({
     required: true,
   },
   year: {
-    type: String,
+    type: Number, // Changed from String to Number to match client data
     required: true,
   },
   email: {
@@ -25,7 +25,13 @@ const studentResponseSchema = new mongoose.Schema({
     type: Number,
     required: true,
     default: 0,
+  },
+  answers: {
+    type: Array, // Add answers field to store user responses
+    default: []
   }
+}, {
+  timestamps: true // Add created/updated timestamps
 });
 
 module.exports = mongoose.model("StudentResponse", studentResponseSchema);

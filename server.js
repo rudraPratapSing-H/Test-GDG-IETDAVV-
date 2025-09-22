@@ -40,26 +40,38 @@ mongoose.connect(process.env.MONGO_URI)
 // Submit Answers
 app.post("/submit", async (req, res) => {
   try {
-    const { name, branch, year, email, cheatCount, score } = req.body;
+    const { name, branch, year, email, cheatCount, score, answers } = req.body;
+
+    console.log("Received submission:", { name, branch, year, email, cheatCount, score, answersLength: answers?.length }); // Debug log
 
     // Validate required fields
     if (!name || !branch || !year || !email) {
+      console.log("Missing required fields");
       return res.status(400).json({ error: "Missing required fields." });
     }
 
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
+      console.log("Invalid email format:", email);
       return res.status(400).json({ error: "Invalid email format." });
+    }
+
+    // Validate year (should be a number between 1-4)
+    if (typeof year !== 'number' || year < 1 || year > 4) {
+      console.log("Invalid year:", year);
+      return res.status(400).json({ error: "Year must be a number between 1 and 4." });
     }
 
     // Validate score (should be a number and within reasonable range)
     if (score !== undefined && (typeof score !== 'number' || score < 0 || score > 100)) {
+      console.log("Invalid score:", score);
       return res.status(400).json({ error: "Score must be a number between 0 and 100." });
     }
 
     // Validate cheatCount (should be a non-negative number)
     if (cheatCount !== undefined && (typeof cheatCount !== 'number' || cheatCount < 0)) {
+      console.log("Invalid cheat count:", cheatCount);
       return res.status(400).json({ error: "Cheat count must be a non-negative number." });
     }
 
@@ -71,14 +83,16 @@ app.post("/submit", async (req, res) => {
       email,
       cheatCount: cheatCount || 0,
       score: score || 0,
+      answers: answers || []
     });
 
     await studentResponse.save(); // Save the response to the database
-    location.href = "/thankyou.html";
+    console.log("Student response saved successfully");
 
     res.status(200).json({ message: "Data submitted successfully." });
   } catch (err) {
     console.error("Submit error:", err.message);
+    console.error("Full error:", err); // More detailed error logging
     
     // Handle duplicate key error (if email is unique)
     if (err.code === 11000) {
