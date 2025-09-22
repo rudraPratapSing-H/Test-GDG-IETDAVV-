@@ -89,7 +89,7 @@ app.post("/submit", async (req, res) => {
     await studentResponse.save(); // Save the response to the database
     console.log("Student response saved successfully");
 
-    res.status(200).json({ message: "Data submitted successfully." });
+    return res.status(200).json({ message: "Data submitted successfully." });
   } catch (err) {
     console.error("Submit error:", err.message);
     console.error("Full error:", err); // More detailed error logging
