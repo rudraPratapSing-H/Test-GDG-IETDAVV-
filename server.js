@@ -74,6 +74,7 @@ app.post("/submit", async (req, res) => {
     });
 
     await studentResponse.save(); // Save the response to the database
+    location.href = "/thankyou.html";
 
     res.status(200).json({ message: "Data submitted successfully." });
   } catch (err) {
