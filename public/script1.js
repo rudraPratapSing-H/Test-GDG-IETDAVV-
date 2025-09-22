@@ -214,42 +214,55 @@ function initializeTimerDisplay() {
 
 // Fullscreen functionality
 function forceFullscreen() {
-  const element = document.documentElement;
-  
-  // Check if already in fullscreen
-  if (document.fullscreenElement || document.webkitFullscreenElement || 
-      document.mozFullScreenElement || document.msFullscreenElement) {
-    isFullscreenEnabled = true;
-    hideFullscreenOverlay();
-    return;
-  }
-  
-  // Try different fullscreen methods for browser compatibility
-  if (element.requestFullscreen) {
-    element.requestFullscreen().then(() => {
-      isFullscreenEnabled = true;
-      hideFullscreenOverlay();
-    }).catch((err) => {
-      console.error('Error with requestFullscreen:', err);
-      tryAlternativeFullscreen();
+  requestFullscreen()
+    .then(() => {
+      document.getElementById("fs-exit-overlay").style.display = "none";
+
+      cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / 3`;
+      // showCheatWarning();
+      //showQuestion(currentQuestion);
+
+      questionSpace.innerHTML = `
+  <p>Q${index + 1}: ${questions[index].question}</p>
+  <label><input type="checkbox" name="q${index}" value="a" /> ${
+        questions[index].a
+      }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="b" /> ${
+        questions[index].b
+      }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="c" /> ${
+        questions[index].c
+      }</label><br/>
+  <label><input type="checkbox" name="q${index}" value="d" /> ${
+        questions[index].d
+      }</label>
+`;
+
+      reportCheating("Exited fullscreen");
+
+      if (cheatCount >= 3) {
+        alert("Cheating limit reached. Auto-submitting.");
+        autoSubmit("Exited fullscreen 3 times");
+      }
+    })
+    .catch(() => {
+      alert("Please allow fullscreen to continue.");
     });
-  } else if (element.webkitRequestFullscreen) { // Safari
-    element.webkitRequestFullscreen();
-    isFullscreenEnabled = true;
-    hideFullscreenOverlay();
-  } else if (element.mozRequestFullScreen) { // Firefox
-    element.mozRequestFullScreen();
-    isFullscreenEnabled = true;
-    hideFullscreenOverlay();
-  } else if (element.msRequestFullscreen) { // IE/Edge
-    element.msRequestFullscreen();
-    isFullscreenEnabled = true;
-    hideFullscreenOverlay();
+}
+
+function requestFullscreen() {
+  const elem = document.documentElement;
+  if (elem.requestFullscreen) {
+    return elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    return elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    return elem.msRequestFullscreen();
   } else {
-    // Fallback if fullscreen is not supported
-    tryAlternativeFullscreen();
+    return Promise.reject();
   }
 }
+
 
 function tryAlternativeFullscreen() {
   // If standard fullscreen fails, try to maximize window and hide browser UI
@@ -484,16 +497,40 @@ function handleQuizSubmission() {
     }
   }
   
+  // Get form values and validate they exist
+  const nameField = document.getElementById("name");
+  const branchField = document.getElementById("branch");
+  const yearField = document.getElementById("year");
+  const emailField = document.getElementById("email");
+  
+  if (!nameField || !branchField || !yearField || !emailField) {
+    alert("Error: Form fields not found. Please refresh the page and try again.");
+    return;
+  }
+  
+  const name = nameField.value.trim();
+  const branch = branchField.value.trim();
+  const year = yearField.value;
+  const email = emailField.value.trim();
+  
+  // Validate required fields on client side
+  if (!name || !branch || !year || !email) {
+    alert("Please fill in all required fields.");
+    return;
+  }
+  
   // Prepare submission data
   const submissionData = {
-    name: document.getElementById("name").value,
-    branch: document.getElementById("branch").value,
-    year: document.getElementById("year").value,
-    email: document.getElementById("email").value,
+    name: name,
+    branch: branch,
+    year: parseInt(year), // Ensure year is a number
+    email: email,
     answers: userAnswers,
     score: score,
     cheatCount: cheatCount
   };
+  
+  console.log('Submitting data:', submissionData); // Debug log
   
   // Submit to server
   fetch('/submit', {
@@ -504,24 +541,29 @@ function handleQuizSubmission() {
     body: JSON.stringify(submissionData)
   })
   .then(response => {
+    console.log('Response status:', response.status); // Debug log
     if (response.ok) {
       return response.json();
     } else {
       // Handle HTTP error responses
       return response.json().then(errorData => {
+        console.log('Error data:', errorData); // Debug log
         throw new Error(errorData.error || 'Submission failed');
+      }).catch(() => {
+        // If JSON parsing fails, throw a generic error
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       });
     }
   })
   .then(data => {
     // Server returns { message: "Data submitted successfully." } on success
-    console.log('Quiz submitted successfully');
+    console.log('Success response:', data); // Debug log
     clearInterval(timerInterval);
     alert(`Quiz submitted successfully! Your score: ${score}/${questions.length}`);
     window.location.href = '/thankyou.html';
   })
   .catch(error => {
-    console.error('Error:', error);
+    console.error('Submission error:', error);
     alert('Error submitting quiz: ' + error.message);
   });
 }
@@ -609,6 +651,7 @@ window.nextQuestion = () => {
     moveToNextQuestion();
   }
 };
+
 
 window.prevQuestion = () => {
   if (!isLocked && index > 0) {
