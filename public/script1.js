@@ -503,20 +503,26 @@ function handleQuizSubmission() {
     },
     body: JSON.stringify(submissionData)
   })
-  .then(response => response.json())
-  .then(data => {
-    if (data.success) {
-      console.log('Quiz submitted successfully');
-      clearInterval(timerInterval);
-      alert(`Quiz submitted successfully! Your score: ${score}/${questions.length}`);
-      window.location.href = '/thankyou.html';
+  .then(response => {
+    if (response.ok) {
+      return response.json();
     } else {
-      alert('Error submitting quiz: ' + data.message);
+      // Handle HTTP error responses
+      return response.json().then(errorData => {
+        throw new Error(errorData.error || 'Submission failed');
+      });
     }
+  })
+  .then(data => {
+    // Server returns { message: "Data submitted successfully." } on success
+    console.log('Quiz submitted successfully');
+    clearInterval(timerInterval);
+    alert(`Quiz submitted successfully! Your score: ${score}/${questions.length}`);
+    window.location.href = '/thankyou.html';
   })
   .catch(error => {
     console.error('Error:', error);
-    alert('Error submitting quiz. Please try again.');
+    alert('Error submitting quiz: ' + error.message);
   });
 }
 
