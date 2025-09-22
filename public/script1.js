@@ -12,7 +12,7 @@ let totalCheatCount = 3; // default value, can be overridden by exam data
 let timer;
 // let timeLeft = exam.overallDuration
 let isLocked = false;
-let cheatDisplay; // Fixed typo
+let cheatDisplay;
 // let keybordPermission = exam.allowingKeyboard || false;
 let timeFlag = 0;
 let perQuestionDuration;
@@ -22,7 +22,6 @@ let keylock = false;
 let keyBlock = false;
 // question showing credentials
 let globalScore = 0;
-let userAnswersArray = []; // Store all user answers
 let questionSpace = document.querySelector(".question");
 let index = 0;
 
@@ -38,10 +37,10 @@ if (!submit) {
     e.preventDefault();
     blockOnload();
     const email = document.getElementById("email").value.trim();
-    const emailPattern = /^[0-2][0-9][a-z]{3}[0-9]{3}@ietdavv\.edu\.in$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailPattern.test(email)) {
-      alert("Invalid email! Use your IET-DAVV email.");
+      alert("Invalid email! Please enter a valid email address.");
       return;
     }
 
@@ -158,7 +157,7 @@ function showQuestion() {
   const nextBtn = document.getElementById("nextBtn");
   const submitBtn = document.getElementById("submitBtn");
 
-  if (index === 0) {
+  if (index === 0 || perQuestionDuration) {
     prevBtn.style.display = "none";
   } else {
     prevBtn.style.display = "inline-block";
@@ -214,22 +213,19 @@ function forceFullscreen() {
       document.getElementById("fs-exit-overlay").style.display = "none";
 
       cheatDisplay.textContent = `Cheating Attempts: ${cheatCount} / ${totalCheatCount}`;
-      
-      // Use correct question type
-      let type = questions[index].correct.length === 1 ? "radio" : "checkbox";
           
       questionSpace.innerHTML = `
   <p>Q${index + 1}: ${questions[index].question}</p>
-  <label><input type="${type}" name="q${index}" value="a" /> ${
+  <label><input type="checkbox" name="q${index}" value="a" /> ${
         questions[index].a
       }</label><br/>
-  <label><input type="${type}" name="q${index}" value="b" /> ${
+  <label><input type="checkbox" name="q${index}" value="b" /> ${
         questions[index].b
       }</label><br/>
-  <label><input type="${type}" name="q${index}" value="c" /> ${
+  <label><input type="checkbox" name="q${index}" value="c" /> ${
         questions[index].c
       }</label><br/>
-  <label><input type="${type}" name="q${index}" value="d" /> ${
+  <label><input type="checkbox" name="q${index}" value="d" /> ${
         questions[index].d
       }</label>
 `;
@@ -436,7 +432,7 @@ function perQuestionTimer() {
   const label = document.getElementById("timer-text");
   if (!label) return;
   clearInterval(timer);
-  // perQuestionDuration is in seconds, not minutes
+  // perQuestionDuration is already in seconds, don't multiply by 60
   timeLeft = perQuestionDuration + extraSecond;
   timer = setInterval(() => {
     timeLeft--;
@@ -445,32 +441,13 @@ function perQuestionTimer() {
     label.textContent = `${minutes}:${seconds}`;
 
     if (timeLeft <= 0) {
-      clearInterval(timer); // crucial for timer to work properly
+      clearInterval(timer); // crutial for timer to work propely
 
       if (index === questions.length - 1) {
         autoSubmit("Time's up on last question");
       } else {
-        // Store current answer before moving to next question
-        const selectedOptions = document.querySelectorAll(
-          `input[name="q${index}"]:checked`
-        );
-        const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
-        userAnswersArray[index] = userAnswers;
-
-        // Check if answer is correct
-        const correctAnswers = questions[index].correct;
-        const isCorrect =
-          userAnswers.length === correctAnswers.length &&
-          userAnswers.every((val) => correctAnswers.includes(val));
-
-        if (isCorrect) {
-          globalScore++;
-        }
-
         extraSecond++;
-        index++;
-        showQuestion();
-        perQuestionTimer(); // Restart timer for next question
+        nextQuestion();
       }
     }
   }, 1000);
@@ -499,21 +476,22 @@ function submitForm(auto = false) {
   const submitBtn = document.getElementById("submitBtn");
   if (submitBtn) submitBtn.disabled = true;
 
-  // Process the current question if not already processed
-  if (!auto) {
-    const selectedOptions = document.querySelectorAll(
-      `input[name="q${index}"]:checked`
-    );
-    const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
-    const correctAnswers = questions[index].correct;
+  const selectedOptions = document.querySelectorAll(
+    `input[name="q${index}"]:checked`
+  );
+  const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
 
-    const isCorrect =
-      userAnswers.length === correctAnswers.length &&
-      userAnswers.every((val) => correctAnswers.includes(val));
+  const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
 
-    if (isCorrect) {
-      globalScore++;
-    }
+  // Compare both arrays (ignoring order)
+  const isCorrect =
+    userAnswers.length === correctAnswers.length &&
+    userAnswers.every((val) => correctAnswers.includes(val));
+
+  if (isCorrect) {
+    console.log("Correct answer!");
+
+    globalScore++;
   }
 
   window.location.href = "/thankyou.html";
@@ -544,15 +522,12 @@ function submitForm(auto = false) {
 
 window.nextQuestion = () => {
   console.log("Next question clicked", typeof questions);
-  
-  // Store current question's answer
   const selectedOptions = document.querySelectorAll(
     `input[name="q${index}"]:checked`
   );
   const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
-  userAnswersArray[index] = userAnswers;
 
-  const correctAnswers = questions[index].correct;
+  const correctAnswers = questions[index].correct; // should be an array like ["a", "c"]
 
   // Compare both arrays (ignoring order)
   const isCorrect =
@@ -561,6 +536,7 @@ window.nextQuestion = () => {
 
   if (isCorrect) {
     console.log("Correct answer!");
+
     globalScore++;
   }
   timeFlag++;
@@ -588,25 +564,8 @@ window.nextQuestion = () => {
 // Add this function after window.nextQuestion
 window.prevQuestion = () => {
   if (index <= 0) return;
-  
-  // Store current answer before going back
-  const selectedOptions = document.querySelectorAll(
-    `input[name="q${index}"]:checked`
-  );
-  const userAnswers = Array.from(selectedOptions).map((opt) => opt.value);
-  userAnswersArray[index] = userAnswers;
-  
   index--;
   showQuestion();
-  
-  // Restore previous answers if they exist
-  if (userAnswersArray[index] && userAnswersArray[index].length > 0) {
-    userAnswersArray[index].forEach(answer => {
-      const input = document.querySelector(`input[name="q${index}"][value="${answer}"]`);
-      if (input) input.checked = true;
-    });
-  }
-  
   // Restart per-question timer if in per-question mode
   if (perQuestionDuration && !isNaN(perQuestionDuration)) {
     clearInterval(timer);
