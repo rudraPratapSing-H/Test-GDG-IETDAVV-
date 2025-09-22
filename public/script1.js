@@ -506,6 +506,7 @@ function handleQuizSubmission() {
   .then(response => response.json())
   .then(data => {
     if (data.success) {
+      console.log('Quiz submitted successfully');
       clearInterval(timerInterval);
       alert(`Quiz submitted successfully! Your score: ${score}/${questions.length}`);
       window.location.href = '/thankyou.html';
