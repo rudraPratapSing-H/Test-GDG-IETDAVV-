@@ -1,4 +1,4 @@
-import { Keyboard } from 'react-native';
+// import { Keyboard } from 'react-native';
 const BASE_URL = window.location.origin;
 const submitURL = `${BASE_URL}/submit`;
 const cheatURL = `${BASE_URL}/cheat`;
