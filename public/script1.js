@@ -173,10 +173,9 @@ function showQuestion() {
   const nextBtn = document.getElementById("nextBtn");
   const submitBtn = document.getElementById("submitBtn");
 
-  if (index === 0) {
+  // Always hide the previous button
+  if (prevBtn) {
     prevBtn.style.display = "none";
-  } else {
-    prevBtn.style.display = "inline-block";
   }
 
   if (index === questions.length - 1) {
@@ -485,17 +484,22 @@ function handleQuizSubmission() {
   getUserAnswer(); // Get the current question's answer
   
   // Calculate score
-  let score = 0;
+  let correctAnswers = 0;
   for (let i = 0; i < questions.length; i++) {
     if (userAnswers[i] && questions[i]) {
       const userAnswer = Array.isArray(userAnswers[i]) ? userAnswers[i].sort() : [userAnswers[i]];
       const correctAnswer = Array.isArray(questions[i].correct) ? questions[i].correct.sort() : [questions[i].correct];
       
       if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswer)) {
-        score++;
+        correctAnswers++;
       }
     }
   }
+  
+  // Calculate percentage score (0-100) as expected by server
+  const scorePercentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
+  
+  console.log(`Score calculation: ${correctAnswers}/${questions.length} = ${scorePercentage}%`); // Debug log
   
   // Get form values and validate they exist
   const nameField = document.getElementById("name");
@@ -526,7 +530,7 @@ function handleQuizSubmission() {
     year: parseInt(year), // Ensure year is a number
     email: email,
     answers: userAnswers,
-    score: score,
+    score: scorePercentage, // Use percentage score (0-100)
     cheatCount: cheatCount
   };
   
@@ -559,7 +563,7 @@ function handleQuizSubmission() {
     // Server returns { message: "Data submitted successfully." } on success
     console.log('Success response:', data); // Debug log
     clearInterval(timerInterval);
-    alert(`Quiz submitted successfully! Your score: ${score}/${questions.length}`);
+    alert(`Quiz submitted successfully! Your score: ${correctAnswers}/${questions.length} (${scorePercentage}%)`);
     window.location.href = '/thankyou.html';
   })
   .catch(error => {
