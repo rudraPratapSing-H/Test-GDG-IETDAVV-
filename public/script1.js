@@ -284,34 +284,34 @@ function requestFullscreen() {
 }
 
 
-function tryAlternativeFullscreen() {
-  // If standard fullscreen fails, try to maximize window and hide browser UI
-  console.warn('Standard fullscreen not available, using alternative method');
+// function tryAlternativeFullscreen() {
+//   // If standard fullscreen fails, try to maximize window and hide browser UI
+//   console.warn('Standard fullscreen not available, using alternative method');
   
-  // Hide browser UI elements and maximize
-  try {
-    // Move window to top-left and resize to full screen
-    window.moveTo(0, 0);
-    window.resizeTo(screen.width, screen.height);
+//   // Hide browser UI elements and maximize
+//   try {
+//     // Move window to top-left and resize to full screen
+//     window.moveTo(0, 0);
+//     window.resizeTo(screen.width, screen.height);
     
-    // Hide scrollbars and other UI elements
-    document.body.style.overflow = 'hidden';
-    document.documentElement.style.overflow = 'hidden';
+//     // Hide scrollbars and other UI elements
+//     document.body.style.overflow = 'hidden';
+//     document.documentElement.style.overflow = 'hidden';
     
-    isFullscreenEnabled = true;
-    hideFullscreenOverlay();
+//     isFullscreenEnabled = true;
+//     hideFullscreenOverlay();
     
-    // Show a warning that true fullscreen couldn't be activated
-    setTimeout(() => {
-      alert('Please press F11 or use browser fullscreen for better quiz experience.');
-    }, 1000);
+//     // Show a warning that true fullscreen couldn't be activated
+//     setTimeout(() => {
+//       alert('Please press F11 or use browser fullscreen for better quiz experience.');
+//     }, 1000);
     
-  } catch (err) {
-    console.error('Alternative fullscreen method failed:', err);
-    alert('Fullscreen is required for this quiz. Please manually enter fullscreen mode (F11) to continue.');
-    showFullscreenOverlay();
-  }
-}
+//   } catch (err) {
+//     console.error('Alternative fullscreen method failed:', err);
+//     alert('Fullscreen is required for this quiz. Please manually enter fullscreen mode (F11) to continue.');
+//     showFullscreenOverlay();
+//   }
+// }
 
 function hideFullscreenOverlay() {
   const overlay = document.getElementById('fs-exit-overlay');
