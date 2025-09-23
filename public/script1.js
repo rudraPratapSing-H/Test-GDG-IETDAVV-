@@ -69,6 +69,7 @@ if (!submit) {
       exam = data;
       if (typeof data.json === "string") {
         questions = JSON.parse(data.json);
+        console.log(typeof(questions));
         // shuffle();
       } else {
         questions = data.json;
@@ -128,7 +129,7 @@ if (!submit) {
   });
 }
 
-function shuffle(){
+function randomizeQuestions(){
   const shuffle = (arr) => {
           for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
