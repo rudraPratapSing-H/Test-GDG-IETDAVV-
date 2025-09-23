@@ -146,7 +146,7 @@ if (!submit) {
   });
 }
 
-f
+
 
 let type = "radio";
 let category = "mcq";
@@ -679,7 +679,6 @@ function setupAntiCheat() {
     }
   });
 }
-
 document.addEventListener('DOMContentLoaded', () => {
    console.log('nextQuestion is defined');
   window.nextQuestion = () => {
