@@ -714,3 +714,18 @@ function blockOnload() {
 if (typeof blockOnload === 'function') {
   blockOnload();
 }
+
+// Ensure questions is an array
+if (typeof questions === 'string') {
+  try {
+    questions = JSON.parse(questions);
+  } catch (error) {
+    console.error('Failed to parse questions string:', error);
+    questions = [];
+  }
+}
+
+if (!Array.isArray(questions)) {
+  console.error('Questions is not an array. Defaulting to an empty array.');
+  questions = [];
+}
