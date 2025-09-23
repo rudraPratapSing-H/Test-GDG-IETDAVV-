@@ -541,6 +541,7 @@ function handleQuizSubmission() {
     return;
   }
   let exam = localStorage.getItem("name");
+  console.log
   
   // Prepare submission data
   const submissionData = {
@@ -554,7 +555,8 @@ function handleQuizSubmission() {
     examName: exam || "Unknown Exam" // Ensure examName is provided
   };
   
-  console.log('Submitting data:', submissionData); // Debug log
+  console.log('Submitting data:', submissionData);
+   // Debug log
   
   // Submit to server
   fetch('/submit', {
