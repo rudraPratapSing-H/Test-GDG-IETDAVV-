@@ -32,6 +32,22 @@ const quizSection = document.getElementById("quiz-section");
 const warningSound = new Audio(
   "https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"
 );
+function randomizeQuestions(){
+  const shuffle = (arr) => {
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+          return arr;
+        };
+
+        const pool = shuffle(questions.slice()); // shuffle a copy
+        // choose exactly 10 questions or fewer if the pool has less than 10
+        const randomCount = Math.min(10, pool.length);
+        questions = pool.slice(0, randomCount);
+  
+   
+}
 
 let currentQuestion = 0;
 
@@ -129,22 +145,7 @@ if (!submit) {
   });
 }
 
-function randomizeQuestions(){
-  const shuffle = (arr) => {
-          for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
-          }
-          return arr;
-        };
-
-        const pool = shuffle(questions.slice()); // shuffle a copy
-        // choose exactly 10 questions or fewer if the pool has less than 10
-        const randomCount = Math.min(10, pool.length);
-        questions = pool.slice(0, randomCount);
-  
-   
-}
+f
 
 let type = "radio";
 let category = "mcq";
