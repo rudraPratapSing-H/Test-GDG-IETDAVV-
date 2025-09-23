@@ -86,7 +86,7 @@ if (!submit) {
       if (typeof data.json === "string") {
         questions = JSON.parse(data.json);
         console.log(typeof(questions));
-        shuffle();
+        randomizeQuestions();
       } else {
         questions = data.json;
       }
