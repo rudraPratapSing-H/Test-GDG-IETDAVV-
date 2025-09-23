@@ -18,6 +18,7 @@ let perQuestionDuration;
 let submit = false;
 let keylock = false;
 let keyBlock = false;
+let timerInterval = null;
 // question showing credentials
 let globalScore = 0;
 let userAnswers = []; // Store all user answers
@@ -392,7 +393,7 @@ function displayTimerInfo() {
 }
 
 // Timer functions for both test duration and per-question duration
-let timerInterval = null;
+
 
 function overallTimer() {
   if (!testDuration || isNaN(testDuration)) return;
