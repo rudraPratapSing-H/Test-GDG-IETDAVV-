@@ -329,7 +329,7 @@ function showFullscreenOverlay() {
 
 function setupFullscreenMonitoring() {
   document.addEventListener('fullscreenchange', () => {
-    if (isFullscreenEnabled && !document.fullscreenElement) {
+    if (!document.fullscreenElement) {
       // User exited fullscreen - mark as cheating
       cheatCount++;
       if (cheatDisplay) {
@@ -338,14 +338,20 @@ function setupFullscreenMonitoring() {
       showCheatWarning();
       reportCheating("Exited fullscreen mode");
       showFullscreenOverlay();
-      
+
       if (cheatCount >= totalCheatCount) {
         alert("Cheating limit reached. Auto-submitting your quiz.");
         autoSubmit("Exited fullscreen too many times");
+      } else {
+        // Force the user back into fullscreen
+        setTimeout(() => {
+          alert("You must stay in fullscreen mode to continue the quiz.");
+          forceFullscreen();
+        }, 1000);
       }
     }
   });
-  
+
   // Add click handler to re-enter fullscreen button
   const reenterBtn = document.getElementById('re-enter');
   if (reenterBtn) {
@@ -675,6 +681,7 @@ function setupAntiCheat() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+   console.log('nextQuestion is defined');
   window.nextQuestion = () => {
     if (!isLocked && index < questions.length - 1) {
       moveToNextQuestion();
