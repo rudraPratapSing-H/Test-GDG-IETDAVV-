@@ -540,6 +540,7 @@ function handleQuizSubmission() {
     alert("Please fill in all required fields.");
     return;
   }
+  let exam = localStorage.getItem("name");
   
   // Prepare submission data
   const submissionData = {
@@ -549,7 +550,8 @@ function handleQuizSubmission() {
     email: email,
     answers: userAnswers,
     score: scorePercentage, // Use percentage score (0-100)
-    cheatCount: cheatCount
+    cheatCount: cheatCount,
+    examName: exam || "Unknown Exam" // Ensure examName is provided
   };
   
   console.log('Submitting data:', submissionData); // Debug log

@@ -83,7 +83,8 @@ app.post("/submit", async (req, res) => {
       email,
       cheatCount: cheatCount || 0,
       score: score || 0,
-      answers: answers || []
+      answers: answers || [],
+      examName: examName || "Unknown Exam", // Ensure examName is provided
     });
 
     await studentResponse.save(); // Save the response to the database

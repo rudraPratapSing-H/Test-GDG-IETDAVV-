@@ -28,8 +28,13 @@ const studentResponseSchema = new mongoose.Schema({
   },
   answers: {
     type: Array, // Add answers field to store user responses
-    default: []
-  }
+    default: [],
+  },
+  examName: {
+    type: String, // Name of the exam/test
+    required: true,
+  },
+  
 }, {
   timestamps: true // Add created/updated timestamps
 });
