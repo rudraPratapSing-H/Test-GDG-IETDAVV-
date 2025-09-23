@@ -69,7 +69,7 @@ if (!submit) {
       exam = data;
       if (typeof data.json === "string") {
         questions = JSON.parse(data.json);
-        shuffle();
+        // shuffle();
       } else {
         questions = data.json;
       }
