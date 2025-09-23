@@ -138,8 +138,8 @@ function shuffle(){
         };
 
         const pool = shuffle(questions.slice()); // shuffle a copy
-        // choose random count between 1 and pool.length (adjust range if needed)
-        const randomCount = Math.floor(Math.random() * pool.length) + 1;
+        // choose exactly 10 questions or fewer if the pool has less than 10
+        const randomCount = Math.min(10, pool.length);
         questions = pool.slice(0, randomCount);
   
    
