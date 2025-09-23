@@ -70,7 +70,7 @@ if (!submit) {
       if (typeof data.json === "string") {
         questions = JSON.parse(data.json);
         console.log(typeof(questions));
-        // shuffle();
+        shuffle();
       } else {
         questions = data.json;
       }
