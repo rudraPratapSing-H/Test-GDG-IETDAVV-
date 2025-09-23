@@ -674,35 +674,34 @@ function setupAntiCheat() {
   });
 }
 
-// Navigation button event handlers
-window.nextQuestion = () => {
-  if (!isLocked && index < questions.length - 1) {
-    moveToNextQuestion();
-  }
-};
-
-
-window.prevQuestion = () => {
-  if (!isLocked && index > 0) {
-    moveToPrevQuestion();
-  }
-};
-
-// Submit button event handler
-window.submitQuiz = () => {
-  if (confirm("Are you sure you want to submit your quiz? This action cannot be undone.")) {
-    // Force fullscreen before submission
-    if (!document.fullscreenElement) {
-      forceFullscreen();
-      // Wait a moment for fullscreen to activate, then submit
-      setTimeout(() => {
-        handleQuizSubmission();
-      }, 500);
-    } else {
-      handleQuizSubmission();
+document.addEventListener('DOMContentLoaded', () => {
+  window.nextQuestion = () => {
+    if (!isLocked && index < questions.length - 1) {
+      moveToNextQuestion();
     }
-  }
-};
+  };
+
+  window.prevQuestion = () => {
+    if (!isLocked && index > 0) {
+      moveToPrevQuestion();
+    }
+  };
+
+  window.submitQuiz = () => {
+    if (confirm("Are you sure you want to submit your quiz? This action cannot be undone.")) {
+      // Force fullscreen before submission
+      if (!document.fullscreenElement) {
+        forceFullscreen();
+        // Wait a moment for fullscreen to activate, then submit
+        setTimeout(() => {
+          handleQuizSubmission();
+        }, 500);
+      } else {
+        handleQuizSubmission();
+      }
+    }
+  };
+});
 
 // Block onload function to prevent certain browser behaviors
 function blockOnload() {
