@@ -266,7 +266,7 @@ function forceFullscreen() {
       }
     })
     .catch(() => {
-      alert("Please allow fullscreen to continue.");
+      // alert("Please allow fullscreen to continue.");
     });
 }
 
@@ -345,7 +345,7 @@ function setupFullscreenMonitoring() {
       } else {
         // Force the user back into fullscreen
         setTimeout(() => {
-          alert("You must stay in fullscreen mode to continue the quiz.");
+          // alert("You must stay in fullscreen mode to continue the quiz.");
           forceFullscreen();
         }, 1000);
       }
