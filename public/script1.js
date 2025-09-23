@@ -69,6 +69,7 @@ if (!submit) {
       exam = data;
       if (typeof data.json === "string") {
         questions = JSON.parse(data.json);
+        shuffle();
       } else {
         questions = data.json;
       }
@@ -125,6 +126,23 @@ if (!submit) {
       console.warn('No timing information available for the quiz');
     }
   });
+}
+
+function shuffle(){
+  const shuffle = (arr) => {
+          for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+          return arr;
+        };
+
+        const pool = shuffle(questions.slice()); // shuffle a copy
+        // choose random count between 1 and pool.length (adjust range if needed)
+        const randomCount = Math.floor(Math.random() * pool.length) + 1;
+        questions = pool.slice(0, randomCount);
+  
+   
 }
 
 let type = "radio";
