@@ -137,97 +137,94 @@
           <button type="submit" class="btn" onclick="localStorage.setItem('name', 'Flutter Flow Quiz')">Start</button>
         </div>
       </div>
+      </form>
     </div>
 
-
-      </form>
-
-      <div id="quiz-section" style="display: none">
-        <h2>AI Quiz</h2>
+    <div id="quiz-section" style="display: none">
+      <h2>AI Quiz</h2>
+      <div
+        id="progress-bar-container"
+        style="display: none; margin-bottom: 10px"
+      >
         <div
-          id="progress-bar-container"
-          style="display: none; margin-bottom: 10px"
-        >
-          <div
-            id="progress-bar"
-            style="
-              height: 10px;
-              background: #4caf50;
-              width: 0%;
-              transition: width 0.3s ease;
-              border-radius: 5px;
-            "
-          >
-            <h3></h3>
-          </div>
-        </div>
-
-        <!-- ✅ Clean bold timer with both total and per-question info -->
-        <div id="timer-info" style="text-align: center; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 8px;">
-          <p id="question-counter" style="font-weight: bold; margin: 5px 0; font-size: 1.1em; color: #495057;">
-            Question <span id="current-question">1</span> of <span id="total-questions">--</span>
-          </p>
-          <!-- <p id="total-duration-info" style="font-weight: bold; margin: 5px 0; display: none; color: #28a745;">
-            📋 Total Test Duration: <span id="total-duration-display">--</span> minutes
-          </p> -->
-          <p id="per-question-info" style="font-weight: bold; margin: 5px 0; display: none; color: #007bff;">
-            ⏱️ Per Question Time: <span id="per-question-display">--</span> seconds
-          </p>
-          <p id="timer-label" style="font-weight: bold; margin: 10px 0 5px 0; font-size: 1.1em;">Time Left:</p>
-        </div>
-        <div
-          id="timer-text"
+          id="progress-bar"
           style="
-            font-size: 2.5em;
-            font-weight: bold;
-            text-align: center;
-            margin: 0 0 15px 0;
-            color: #007bff;
-            background: linear-gradient(45deg, #007bff, #0056b3);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            height: 10px;
+            background: #4caf50;
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 5px;
           "
         >
-          --:--
+          <h3></h3>
         </div>
+      </div>
 
-        <p id="cheat-count" class="cheat-warning">Cheating Attempts: 0/3</p>
-        <p
-          id="cheat-warning"
-          style="
-            display: none;
-            color: red;
-            font-weight: bold;
-            text-align: center;
-          "
-        ></p>
-        <div class="question"></div>
-        
-        <div class="nav-buttons">
-          <button
-            type="button"
-            class="btn"
-            onclick="prevQuestion()"
-            style="display: none;"
-            disabled = true
-            id="prevBtn"
-          >
-            &larr; Previous
-          </button>
-          <button
-            type="button"
-            class="btn"
-            onclick="nextQuestion()"
-            id="nextBtn"
-          >
-            Next &rarr;
-          </button>
-        </div>
+      <!-- ✅ Clean bold timer with both total and per-question info -->
+      <div id="timer-info" style="text-align: center; margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+        <p id="question-counter" style="font-weight: bold; margin: 5px 0; font-size: 1.1em; color: #495057;">
+          Question <span id="current-question">1</span> of <span id="total-questions">--</span>
+        </p>
+        <!-- <p id="total-duration-info" style="font-weight: bold; margin: 5px 0; display: none; color: #28a745;">
+          📋 Total Test Duration: <span id="total-duration-display">--</span> minutes
+        </p> -->
+        <p id="per-question-info" style="font-weight: bold; margin: 5px 0; display: none; color: #007bff;">
+          ⏱️ Per Question Time: <span id="per-question-display">--</span> seconds
+        </p>
+        <p id="timer-label" style="font-weight: bold; margin: 10px 0 5px 0; font-size: 1.1em;">Time Left:</p>
+      </div>
+      <div
+        id="timer-text"
+        style="
+          font-size: 2.5em;
+          font-weight: bold;
+          text-align: center;
+          margin: 0 0 15px 0;
+          color: #007bff;
+          background: linear-gradient(45deg, #007bff, #0056b3);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        "
+      >
+        --:--
+      </div>
 
-        <div id="submit-btn-container">
-          <button id="submitBtn" type="button" class="btn hide" onclick="submitQuiz()">Submit</button>
-        </div>
+      <p id="cheat-count" class="cheat-warning">Cheating Attempts: 0/3</p>
+      <p
+        id="cheat-warning"
+        style="
+          display: none;
+          color: red;
+          font-weight: bold;
+          text-align: center;
+        "
+      ></p>
+      <div class="question"></div>
+      
+      <div class="nav-buttons">
+        <button
+          type="button"
+          class="btn"
+          onclick="prevQuestion()"
+          style="display: none;"
+          disabled = true
+          id="prevBtn"
+        >
+          &larr; Previous
+        </button>
+        <button
+          type="button"
+          class="btn"
+          onclick="nextQuestion()"
+          id="nextBtn"
+        >
+          Next &rarr;
+        </button>
+      </div>
+
+      <div id="submit-btn-container">
+        <button id="submitBtn" type="button" class="btn hide" onclick="submitQuiz()">Submit</button>
       </div>
     </div>
 
