@@ -698,18 +698,62 @@ document.addEventListener('DOMContentLoaded', () => {
        // Ensure the last question's answer is captured
        getUserAnswer();
 
-       if (confirm("Are you sure you want to submit your quiz? This action cannot be undone.")) {
-         // Force fullscreen before submission
-         if (!document.fullscreenElement) {
-           forceFullscreen();
-           // Wait a moment for fullscreen to activate, then submit
-           setTimeout(() => {
-             handleQuizSubmission();
-           }, 500);
-         } else {
-           handleQuizSubmission();
-         }
+       // Retrieve unique code from the form
+       const uniqueCodeField = document.querySelector('input[name="unique-code"]');
+       const uniqueCode = uniqueCodeField ? uniqueCodeField.value.trim() : null;
+
+       // Retrieve email from the form
+       const emailField = document.getElementById("email");
+       const email = emailField ? emailField.value.trim() : null;
+
+       // Validate unique code and email
+       let isValid = false;
+       if (uniqueCode && email) {
+           try {
+               const EU = require('./EU.js'); // Import the EU.js file
+               isValid = EU.some(entry => entry.email === email && entry.uniqueCode === uniqueCode);
+           } catch (error) {
+               console.error('Error loading EU.js:', error);
+           }
        }
+
+       if (!isValid) {
+           alert('Invalid unique code or email. Please check and try again.');
+           return;
+       }
+
+       // Prepare submission data
+       const submissionData = {
+           name: document.getElementById("name").value.trim(),
+           branch: document.getElementById("branch").value.trim(),
+           year: parseInt(document.getElementById("year").value),
+           email: email,
+           uniqueCode: uniqueCode,
+           answers: userAnswers,
+           score: calculateScore(), // Assuming calculateScore() exists
+           cheatCount: cheatCount,
+           examName: localStorage.getItem("name") || "Unknown Exam"
+       };
+
+       console.log('Submitting data:', submissionData);
+
+       // Submit to server
+       fetch('/submit', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json',
+           },
+           body: JSON.stringify(submissionData)
+       })
+       .then(response => response.json())
+       .then(data => {
+           console.log('Submission successful:', data);
+           alert('Quiz submitted successfully!');
+       })
+       .catch(error => {
+           console.error('Submission failed:', error);
+           alert('Failed to submit quiz. Please try again later.');
+       });
    };
 });
 

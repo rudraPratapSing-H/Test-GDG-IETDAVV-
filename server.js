@@ -40,12 +40,12 @@ mongoose.connect(process.env.MONGO_URI)
 // Submit Answers
 app.post("/submit", async (req, res) => {
   try {
-    const { name, branch, year, email, cheatCount, score, answers, examName } = req.body;
+    const { name, branch, year, email, cheatCount, score, answers, examName, uniqueCode } = req.body;
 
     console.log("Received submission:", { name, branch, year, email, cheatCount, score, answersLength: answers?.length }); // Debug log
 
     // Validate required fields
-    if (!name || !branch || !year || !email) {
+    if (!name || !branch || !year || !email || !uniqueCode) {
       console.log("Missing required fields");
       return res.status(400).json({ error: "Missing required fields." });
     }

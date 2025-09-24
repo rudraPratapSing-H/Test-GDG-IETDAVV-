@@ -26,6 +26,10 @@ const examSchema = new mongoose.Schema({
     type: Number, // in minutes
     
   },
+  uniqueCode: {
+    type: String,
+    required: true,
+  },
   perQuestionDuration: {
     type: Number, // in minutes
   },
