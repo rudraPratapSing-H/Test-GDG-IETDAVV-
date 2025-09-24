@@ -576,6 +576,8 @@ function handleQuizSubmission() {
        .then(response => response.json())
        .then(data => {
            console.log('Submission successful:', data);
+                   window.location.href = "thankyou.html";
+
            alert('Quiz submitted successfully!');
        })
        .catch(error => {
@@ -727,7 +729,9 @@ document.addEventListener('DOMContentLoaded', () => {
        .then(response => response.json())
        .then(data => {
            console.log('Submission successful:', data);
+                   window.location.href = "thankyou.html";
            alert('Quiz submitted successfully!');
+           
        })
        .catch(error => {
            console.error('Submission failed:', error);
