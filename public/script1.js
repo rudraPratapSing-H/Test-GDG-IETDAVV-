@@ -554,53 +554,37 @@ function handleQuizSubmission() {
   
   // Prepare submission data
   const submissionData = {
-    name: name,
-    branch: branch,
-    year: parseInt(year), // Ensure year is a number
-    email: email,
-    answers: userAnswers,
-    score: scorePercentage, // Use percentage score (0-100)
-    cheatCount: cheatCount,
-    examName: exam || "Unknown Exam" // Ensure examName is provided
-  };
-  
-  console.log('Submitting data:', submissionData);
-   // Debug log
-  
-  // Submit to server
-  fetch('/submit', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(submissionData)
-  })
-  .then(response => {
-    console.log('Response status:', response.status); // Debug log
-    if (response.ok) {
-      return response.json();
-    } else {
-      // Handle HTTP error responses
-      return response.json().then(errorData => {
-        console.log('Error data:', errorData); // Debug log
-        throw new Error(errorData.error || 'Submission failed');
-      }).catch(() => {
-        // If JSON parsing fails, throw a generic error
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      });
-    }
-  })
-  .then(data => {
-    // Server returns { message: "Data submitted successfully." } on success
-    console.log('Success response:', data); // Debug log
-    clearInterval(timerInterval);
-    alert(`Quiz submitted successfully! Your score: ${correctAnswers}/${questions.length} (${scorePercentage}%)`);
-    window.location.href = '/thankyou.html';
-  })
-  .catch(error => {
-    console.error('Submission error:', error);
-    alert('Error submitting quiz: ' + error.message);
-  });
+           name: document.getElementById("name").value.trim(),
+           branch: document.getElementById("branch").value.trim(),
+           year: parseInt(document.getElementById("year").value),
+           email: email,
+           uniqueCode: uniqueCode,
+           answers: userAnswers,
+           score: scorePercentage, // Assuming calculateScore() exists
+           cheatCount: cheatCount,
+           examName: localStorage.getItem("name") || "Unknown Exam"
+       };
+
+       console.log('Submitting data:', submissionData);
+
+       // Submit to server
+       fetch('/submit', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json',
+           },
+           body: JSON.stringify(submissionData)
+       })
+       .then(response => response.json())
+       .then(data => {
+           console.log('Submission successful:', data);
+           alert('Quiz submitted successfully!');
+       })
+       .catch(error => {
+           console.error('Submission failed:', error);
+           alert('Failed to submit quiz. Please try again later.');
+       });
+   
 }
 
 function reportCheating(reason) {
@@ -727,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
            email: email,
            uniqueCode: uniqueCode,
            answers: userAnswers,
-           score: calculateScore(), // Assuming calculateScore() exists
+           score: scorePercentage, // Assuming calculateScore() exists
            cheatCount: cheatCount,
            examName: localStorage.getItem("name") || "Unknown Exam"
        };
