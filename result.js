@@ -23,7 +23,23 @@ async function fetchAndSortResponses() {
       console.log(`Score: ${response.score}`);
     //   console.log(`Answers: ${JSON.stringify(response.answers)}`);
     //   console.log(`Exam Name: ${response.examName}`);
-      console.log(`Date: ${response.date}`);
+      
+      // Format date and time separately
+      const submissionDate = new Date(response.createdAt);
+      const formattedDate = submissionDate.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      const formattedTime = submissionDate.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+      
+      console.log(`Date: ${formattedDate}`);
+      console.log(`Time of Submission: ${formattedTime}`);
     });
   } catch (err) {
     console.error("Error fetching and sorting responses:", err);

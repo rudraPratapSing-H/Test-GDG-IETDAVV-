@@ -605,6 +605,9 @@ function autoSubmit(reason) {
   reportCheating(reason);
   isLocked = true;
   handleQuizSubmission();
+                     window.location.href = "thankyou.html";
+                     
+
 }
 
 function showCheatWarning() {
