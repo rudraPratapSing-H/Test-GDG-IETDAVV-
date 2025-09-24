@@ -700,6 +700,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
        // Retrieve unique code from the form
        const uniqueCodeField = document.getElementById("unique-code");
+       console.log('uniqueCodeField:', uniqueCodeField);
+       console.log('emailField:', document.getElementById("email"));
        const uniqueCode = uniqueCodeField ? uniqueCodeField.value.trim() : null;
 
        // Retrieve email from the form
