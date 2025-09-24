@@ -699,7 +699,7 @@ document.addEventListener('DOMContentLoaded', () => {
        getUserAnswer();
 
        // Retrieve unique code from the form
-       const uniqueCodeField = document.querySelector('input[name="unique-code"]');
+       const uniqueCodeField = document.getElementById("unique-code");
        const uniqueCode = uniqueCodeField ? uniqueCodeField.value.trim() : null;
 
        // Retrieve email from the form
