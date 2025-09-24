@@ -33,28 +33,29 @@
       </button>
     </div>
 
-    <div class="form-container">
-    
-      <form id="user-form">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required />
+    <div class="container" style="display: flex; flex-direction: column;">
+      <div class="form-container">
+      
+        <form id="user-form">
+          <label for="name">Name:</label>
+          <input type="text" id="name" required />
 
-        <label for="branch">Branch:</label>
-        <input type="text" id="branch" required />
+          <label for="branch">Branch:</label>
+          <input type="text" id="branch" required />
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" required />
+          <label for="email">Email:</label>
+          <input type="email" id="email" required />
 
-        <label for="year">Year:</label>
-        <select id="year" required>
-          <option value="1">1st Year</option>
-          <option value="2">2nd Year</option>
-          <option value="3">3rd Year</option>
-          <option value="4">4th Year</option>
-        </select>
-        
-        <label for="unique-code">Unique Code:</label>
-        <input type="text" id="unique-code" required />
+          <label for="year">Year:</label>
+          <select id="year" required>
+            <option value="1">1st Year</option>
+            <option value="2">2nd Year</option>
+            <option value="3">3rd Year</option>
+            <option value="4">4th Year</option>
+          </select>
+          
+          <label for="unique-code">Unique Code:</label>
+          <input type="text" id="unique-code" required />
 
         <div
           style="
@@ -133,15 +134,15 @@
           </ul>
         </div>
         
-        <div style="text-align: right">
-          <button type="submit" class="btn" onclick="localStorage.setItem('name', 'Flutter Flow Quiz')">Start</button>
+          <div style="text-align: right">
+            <button type="submit" class="btn" onclick="localStorage.setItem('name', 'Flutter Flow Quiz')">Start</button>
+          </div>
         </div>
+        </form>
       </div>
-      </form>
-    </div>
 
-    <div id="quiz-section" style="display: none">
-      <h2>AI Quiz</h2>
+      <div id="quiz-section" style="display: none">
+        <h2>AI Quiz</h2>
       <div
         id="progress-bar-container"
         style="display: none; margin-bottom: 10px"
@@ -223,8 +224,9 @@
         </button>
       </div>
 
-      <div id="submit-btn-container">
-        <button id="submitBtn" type="button" class="btn hide" onclick="submitQuiz()">Submit</button>
+        <div id="submit-btn-container">
+          <button id="submitBtn" type="button" class="btn hide" onclick="submitQuiz()">Submit</button>
+        </div>
       </div>
     </div>
 
