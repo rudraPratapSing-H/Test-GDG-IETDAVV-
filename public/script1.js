@@ -261,9 +261,9 @@ function forceFullscreen() {
 
       reportCheating("Exited fullscreen");
 
-      if (cheatCount >= 3) {
+      if (cheatCount >= totalCheatCount) {
         alert("Cheating limit reached. Auto-submitting.");
-        autoSubmit("Exited fullscreen 3 times");
+        autoSubmit("Exited fullscreen too many times");
       }
     })
     .catch(() => {
@@ -332,6 +332,8 @@ function setupFullscreenMonitoring() {
     if (!document.fullscreenElement) {
       // User exited fullscreen - mark as cheating
       cheatCount++;
+      console.log(`DEBUG: Cheat detected! Count: ${cheatCount}, Limit: ${totalCheatCount}`);
+      
       if (cheatDisplay) {
         cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / ${totalCheatCount}`;
       }
@@ -339,10 +341,13 @@ function setupFullscreenMonitoring() {
       reportCheating("Exited fullscreen mode");
       showFullscreenOverlay();
 
+      console.log(`DEBUG: Checking if ${cheatCount} >= ${totalCheatCount}`);
       if (cheatCount >= totalCheatCount) {
+        console.log('DEBUG: Auto-submit triggered!');
         alert("Cheating limit reached. Auto-submitting your quiz.");
         autoSubmit("Exited fullscreen too many times");
       } else {
+        console.log('DEBUG: Cheat limit not reached yet');
         // Force the user back into fullscreen
         setTimeout(() => {
           // alert("You must stay in fullscreen mode to continue the quiz.");
@@ -602,12 +607,9 @@ function reportCheating(reason) {
 
 function autoSubmit(reason) {
   clearInterval(timerInterval);
-  reportCheating(reason);
-  isLocked = true;
+  // reportCheating(reason);
+  // isLocked = true;
   handleQuizSubmission();
-                     window.location.href = "thankyou.html";
-                     
-
 }
 
 function showCheatWarning() {
