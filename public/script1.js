@@ -609,7 +609,7 @@ function reportCheating(reason) {
 function autoSubmit(reason) {
   console.log(`DEBUG: autoSubmit called with reason: ${reason}`);
   clearInterval(timerInterval);
-  reportCheating(reason);
+  // reportCheating(reason);
   isLocked = true;
   console.log('DEBUG: Calling handleQuizSubmission...');
   handleQuizSubmission();
