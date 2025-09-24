@@ -711,7 +711,10 @@ document.addEventListener('DOMContentLoaded', () => {
        }
 
        if (!isValid) {
-           alert('Invalid unique code or email. Please check and try again.');
+           setTimeout(() => {
+               alert('Invalid unique code or email. Please check and try again.');
+           }, 1111);
+          
            window.location.reload();
 
            return;
