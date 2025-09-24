@@ -700,6 +700,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
        if (!isValid) {
            alert('Invalid unique code or email. Please check and try again.');
+           window.location.reload();
+
            return;
        }
 
