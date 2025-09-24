@@ -511,7 +511,7 @@ function handleQuizSubmission() {
   getUserAnswer(); // Get the current question's answer
   
   // Calculate score
-  let correctAnswers = 0;
+
   for (let i = 0; i < questions.length; i++) {
     if (userAnswers[i] && JSON.stringify(userAnswers[i]) === JSON.stringify(questions[i].correct)) {
       correctAnswers++;
