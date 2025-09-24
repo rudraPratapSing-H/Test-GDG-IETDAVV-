@@ -111,6 +111,7 @@ if (!submit) {
     cheatDisplay = document.getElementById("cheat-count");
     
     // Update cheat display with correct total count
+    console.log(`DEBUG: Quiz initialization - totalCheatCount: ${totalCheatCount}, cheatCount: ${cheatCount}`);
     if (cheatDisplay) {
       cheatDisplay.textContent = `Cheating Attempts: 0/${totalCheatCount}`;
     }
@@ -527,7 +528,7 @@ function handleQuizSubmission() {
   scorePercentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
 
   // Alert the user about their score
-  alert(`Your score is ${scorePercentage}%.`);
+  // alert(`Your score is ${scorePercentage}%.`);
 
   console.log(`Score calculation: ${correctAnswers}/${questions.length} = ${scorePercentage}%`); // Debug log
   
@@ -606,9 +607,11 @@ function reportCheating(reason) {
 }
 
 function autoSubmit(reason) {
+  console.log(`DEBUG: autoSubmit called with reason: ${reason}`);
   clearInterval(timerInterval);
-  // reportCheating(reason);
-  // isLocked = true;
+  reportCheating(reason);
+  isLocked = true;
+  console.log('DEBUG: Calling handleQuizSubmission...');
   handleQuizSubmission();
 }
 
@@ -624,6 +627,7 @@ function showCheatWarning() {
 }
 
 function setupAntiCheat() {
+  console.log(`DEBUG: setupAntiCheat called - cheatCount: ${cheatCount}, totalCheatCount: ${totalCheatCount}`);
   // Setup fullscreen monitoring
   setupFullscreenMonitoring();
   
@@ -656,13 +660,16 @@ function setupAntiCheat() {
           (e.ctrlKey && e.key === 'u')) {
         e.preventDefault();
         cheatCount++;
+        console.log(`DEBUG: Keyboard cheat detected! Count: ${cheatCount}, Limit: ${totalCheatCount}`);
         if (cheatDisplay) cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / ${totalCheatCount}`;
         showCheatWarning();
         reportCheating("Attempted to open developer tools");
         
+        console.log(`DEBUG: Checking keyboard cheat - ${cheatCount} >= ${totalCheatCount}`);
         if (cheatCount >= totalCheatCount) {
+          console.log('DEBUG: Keyboard auto-submit triggered!');
           alert("Cheating limit reached. Auto-submitting your quiz.");
-          autoSubmit("Attempted to open developer tools 3 times");
+          autoSubmit("Attempted to open developer tools too many times");
         }
       }
     }
@@ -722,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
        scorePercentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
 
        // Alert the user about their score
-       alert(`Your score is ${scorePercentage}%.`);
+      //  alert(`Your score is ${scorePercentage}%.`);
 
        console.log(`Score calculation: ${correctAnswers}/${questions.length} = ${scorePercentage}%`); // Debug log
 
