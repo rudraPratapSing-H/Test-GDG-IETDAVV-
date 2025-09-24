@@ -638,21 +638,21 @@ function setupAntiCheat() {
   // Setup fullscreen monitoring
   setupFullscreenMonitoring();
   
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-      cheatCount++;
-      if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
-      if (cheatDisplay)
-        cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / ${totalCheatCount}`;
-      showCheatWarning();
-      reportCheating("Tab switched");
+  // document.addEventListener("visibilitychange", () => {
+  //   if (document.visibilityState === "hidden") {
+  //     cheatCount++;
+  //     if (!cheatDisplay) cheatDisplay = document.getElementById("cheat-count");
+  //     if (cheatDisplay)
+  //       cheatDisplay.textContent = `Cheating Attempt: ${cheatCount} / ${totalCheatCount}`;
+  //     showCheatWarning();
+  //     reportCheating("Tab switched");
 
-      if (cheatCount >= totalCheatCount) {
-        alert("Cheating limit reached. Auto-submitting your quiz.");
-        autoSubmit("Cheated 3 times");
-      }
-    }
-  });
+  //     if (cheatCount >= totalCheatCount) {
+  //       alert("Cheating limit reached. Auto-submitting your quiz.");
+  //       autoSubmit("Cheated 3 times");
+  //     }
+  //   }
+  // });
 
   window.addEventListener("copy", (e) => e.preventDefault());
   window.addEventListener("paste", (e) => e.preventDefault());
@@ -681,32 +681,36 @@ function setupAntiCheat() {
 }
 document.addEventListener('DOMContentLoaded', () => {
    console.log('nextQuestion is defined');
-  window.nextQuestion = () => {
-    if (!isLocked && index < questions.length - 1) {
-      moveToNextQuestion();
-    }
-  };
 
-  window.prevQuestion = () => {
-    if (!isLocked && index > 0) {
-      moveToPrevQuestion();
-    }
-  };
+   window.nextQuestion = () => {
+       if (!isLocked && index < questions.length - 1) {
+         moveToNextQuestion();
+       }
+   };
 
-  window.submitQuiz = () => {
-    if (confirm("Are you sure you want to submit your quiz? This action cannot be undone.")) {
-      // Force fullscreen before submission
-      if (!document.fullscreenElement) {
-        forceFullscreen();
-        // Wait a moment for fullscreen to activate, then submit
-        setTimeout(() => {
-          handleQuizSubmission();
-        }, 500);
-      } else {
-        handleQuizSubmission();
-      }
-    }
-  };
+   window.prevQuestion = () => {
+       if (!isLocked && index > 0) {
+         moveToPrevQuestion();
+       }
+   };
+
+   window.submitQuiz = () => {
+       // Ensure the last question's answer is captured
+       getUserAnswer();
+
+       if (confirm("Are you sure you want to submit your quiz? This action cannot be undone.")) {
+         // Force fullscreen before submission
+         if (!document.fullscreenElement) {
+           forceFullscreen();
+           // Wait a moment for fullscreen to activate, then submit
+           setTimeout(() => {
+             handleQuizSubmission();
+           }, 500);
+         } else {
+           handleQuizSubmission();
+         }
+       }
+   };
 });
 
 // Block onload function to prevent certain browser behaviors
