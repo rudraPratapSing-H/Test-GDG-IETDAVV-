@@ -1,8 +1,9 @@
-// import { Keyboard } from 'react-native'};
+// import { Keyboard, Alert } from 'react-native'};
+
 const BASE_URL = window.location.origin;
 const submitURL = `${BASE_URL}/submit`;
 const cheatURL = `${BASE_URL}/cheat`;
-
+let scorePercentage = 0; // Declare scorePercentage variable
 let timeLeft = 0;
 let exam;
 let questions;
@@ -283,7 +284,6 @@ function requestFullscreen() {
   }
 }
 
-
 // function tryAlternativeFullscreen() {
 //   // If standard fullscreen fails, try to maximize window and hide browser UI
 //   console.warn('Standard fullscreen not available, using alternative method');
@@ -513,19 +513,17 @@ function handleQuizSubmission() {
   // Calculate score
   let correctAnswers = 0;
   for (let i = 0; i < questions.length; i++) {
-    if (userAnswers[i] && questions[i]) {
-      const userAnswer = Array.isArray(userAnswers[i]) ? userAnswers[i].sort() : [userAnswers[i]];
-      const correctAnswer = Array.isArray(questions[i].correct) ? questions[i].correct.sort() : [questions[i].correct];
-      
-      if (JSON.stringify(userAnswer) === JSON.stringify(correctAnswer)) {
-        correctAnswers++;
-      }
+    if (userAnswers[i] && JSON.stringify(userAnswers[i]) === JSON.stringify(questions[i].correct)) {
+      correctAnswers++;
     }
   }
-  
-  // Calculate percentage score (0-100) as expected by server
-  const scorePercentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
-  
+
+  // Calculate percentage score (0-100)
+  scorePercentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
+
+  // Alert the user about their score
+  alert(`Your score is ${scorePercentage}%.`);
+
   console.log(`Score calculation: ${correctAnswers}/${questions.length} = ${scorePercentage}%`); // Debug log
   
   // Get form values and validate they exist
