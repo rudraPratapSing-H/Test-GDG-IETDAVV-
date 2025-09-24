@@ -705,6 +705,22 @@ document.addEventListener('DOMContentLoaded', () => {
            return;
        }
 
+       // Calculate score before submission
+       let correctAnswers = 0;
+       for (let i = 0; i < questions.length; i++) {
+           if (userAnswers[i] && JSON.stringify(userAnswers[i]) === JSON.stringify(questions[i].correct)) {
+               correctAnswers++;
+           }
+       }
+
+       // Calculate percentage score (0-100)
+       scorePercentage = questions.length > 0 ? Math.round((correctAnswers / questions.length) * 100) : 0;
+
+       // Alert the user about their score
+       alert(`Your score is ${scorePercentage}%.`);
+
+       console.log(`Score calculation: ${correctAnswers}/${questions.length} = ${scorePercentage}%`); // Debug log
+
        // Prepare submission data
        const submissionData = {
            name: document.getElementById("name").value.trim(),
@@ -713,7 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
            email: email,
            uniqueCode: uniqueCode,
            answers: userAnswers,
-           score: scorePercentage, // Assuming calculateScore() exists
+           score: scorePercentage,
            cheatCount: cheatCount,
            examName: localStorage.getItem("name") || "Unknown Exam"
        };
